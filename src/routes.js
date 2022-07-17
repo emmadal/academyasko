@@ -28,6 +28,7 @@ import RTL from "layouts/rtl";
 import Notifications from "layouts/notifications";
 import Profile from "layouts/profile";
 import SignIn from "views/signin";
+import ResetPassword from "views/resetPassword";
 import SignUp from "layouts/authentication/sign-up";
 
 // @mui icons
@@ -89,6 +90,14 @@ const routes = [
     icon: <Icon fontSize="small">login</Icon>,
     route: "/signin",
     component: <SignIn />,
+  },
+  {
+    type: "collapse",
+    name: "reset",
+    key: "reset",
+    icon: <Icon fontSize="small">reset password</Icon>,
+    route: "/reset-password",
+    component: <ResetPassword />,
   },
   {
     type: "collapse",
