@@ -1,19 +1,4 @@
 /**
-=========================================================
-* Material Dashboard 2 React - v2.1.0
-=========================================================
-
-* Product Page: https://www.creative-tim.com/product/material-dashboard-react
-* Copyright 2022 Creative Tim (https://www.creative-tim.com)
-
-Coded by www.creative-tim.com
-
- =========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-*/
-
-/**
   This file is used for controlling the global states of the components,
   you can customize the states for the different components here.
 */
@@ -62,6 +47,12 @@ function reducer(state, action) {
     case "DARKMODE": {
       return { ...state, darkMode: action.value };
     }
+    case "LOGIN": {
+      return { ...state, userProfile: action.value, isSignout: false };
+    }
+    case "FETCH_DETAILS": {
+      return { ...state, userProfile: action.value };
+    }
     default: {
       throw new Error(`Unhandled action type: ${action.type}`);
     }
@@ -81,9 +72,32 @@ function MaterialUIControllerProvider({ children }) {
     direction: "ltr",
     layout: "dashboard",
     darkMode: false,
+    isSignout: true,
+    userProfile: {
+      active: 0,
+      avatar: null,
+      id: 0,
+      country: null,
+      name: "",
+      email: "",
+      birthdate: null,
+      user_mobile_1: null,
+      login: "",
+      user_type: "",
+      exams: [],
+      notes: [],
+      marks: [],
+      teachers: [],
+      courses: [],
+      zoom_link: "",
+    },
   };
 
-  const [controller, dispatch] = useReducer(reducer, initialState);
+  const [controller, dispatch] = useReducer(
+    reducer,
+    initialState,
+    (initial) => JSON.parse(localStorage.getItem("ASKO_STORE")) || initial
+  );
 
   const value = useMemo(() => [controller, dispatch], [controller, dispatch]);
 
@@ -119,6 +133,8 @@ const setOpenConfigurator = (dispatch, value) => dispatch({ type: "OPEN_CONFIGUR
 const setDirection = (dispatch, value) => dispatch({ type: "DIRECTION", value });
 const setLayout = (dispatch, value) => dispatch({ type: "LAYOUT", value });
 const setDarkMode = (dispatch, value) => dispatch({ type: "DARKMODE", value });
+const setLogin = (dispatch, value) => dispatch({ type: "LOGIN", value });
+const setFetchDetails = (dispatch, value) => dispatch({ type: "FETCH_DETAILS", value });
 
 export {
   MaterialUIControllerProvider,
@@ -133,4 +149,6 @@ export {
   setDirection,
   setLayout,
   setDarkMode,
+  setLogin,
+  setFetchDetails,
 };

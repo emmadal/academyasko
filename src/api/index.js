@@ -1,4 +1,4 @@
-const API_URL = "https://tenant.devlabcenter.com/api/v1";
+const API_URL = "https://tenant.devlabcenter.com/api/v1/elearning";
 /*
 Register user
 */
@@ -10,13 +10,71 @@ export const registerUser = (data) =>
       redirect: "follow",
       body: JSON.stringify({ ...data }),
     };
-    fetch(`${API_URL}/register`, params)
+    fetch(`${API_URL}/users/register`, params)
       .then((response) => response.json())
-      .then((e) => resolve(e))
+      .then((e) => resolve(e.data.user))
       .catch((err) => reject(err));
   });
 
 /*
 Login user
 */
-export const loginUser = () => {};
+export const loginUser = (data) =>
+  new Promise((resolve, reject) => {
+    const params = {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      redirect: "follow",
+      body: JSON.stringify({ ...data }),
+    };
+    fetch(`${API_URL}/users/login`, params)
+      .then((response) => response.json())
+      .then((e) => resolve(e))
+      .catch((err) => reject(err));
+  });
+
+/*
+Get all user
+*/
+export const getAllUsers = (token) =>
+  new Promise((resolve, reject) => {
+    const params = {
+      method: " GET",
+      headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+      redirect: "follow",
+    };
+    fetch(`${API_URL}/users`, params)
+      .then((response) => response.json())
+      .then((e) => resolve(e))
+      .catch((err) => reject(err));
+  });
+
+/*
+Get user by ID
+*/
+export const getUserById = (userId, token) =>
+  new Promise((resolve, reject) => {
+    const params = {
+      method: "GET",
+      headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+      redirect: "follow",
+    };
+    fetch(`${API_URL}/users/${userId}`, params)
+      .then((response) => response.json())
+      .then((e) => resolve(e))
+      .catch((err) => reject(err));
+  });
+
+/*
+Get Cookie by name
+*/
+export const getCookie = (cookieName) => {
+  let name;
+  if (document.cookie) {
+    name = document?.cookie
+      .split(";")
+      .find((row) => row.startsWith(`${cookieName}=`))
+      .split("=")[1];
+  }
+  return name ?? "";
+};

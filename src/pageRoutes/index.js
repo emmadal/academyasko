@@ -4,9 +4,13 @@ import SignIn from "views/signin";
 import ResetPassword from "views/resetPassword";
 import Profile from "views/profile";
 import UsersList from "views/users-list";
+
 // import SignUp from "views/signup";
 // import Billing from "layouts/billing";
 // import Notifications from "layouts/notifications";
+
+// Protected Route
+import ProtectedRoute from "pageRoutes/ProtectedRoute";
 
 // @mui icons
 import Icon from "@mui/material/Icon";
@@ -17,7 +21,11 @@ const indexRoutes = [
   {
     route: "/dashboard",
     name: "Tableau de bord",
-    component: <Dashboard />,
+    component: (
+      <ProtectedRoute>
+        <Dashboard />
+      </ProtectedRoute>
+    ),
     icon: <Icon fontSize="small">dashboard</Icon>,
     type: "collapse",
     key: "dashboard",
@@ -28,7 +36,11 @@ const indexRoutes = [
     key: "users",
     icon: <Icon fontSize="small">table_view</Icon>,
     route: "/users",
-    component: <UsersList />,
+    component: (
+      <ProtectedRoute>
+        <UsersList />
+      </ProtectedRoute>
+    ),
   },
   {
     type: "collapse",
@@ -36,7 +48,11 @@ const indexRoutes = [
     key: "reports",
     icon: <Icon fontSize="small">table_view</Icon>,
     route: "/reports",
-    component: <UsersList />,
+    component: (
+      <ProtectedRoute>
+        <UsersList />
+      </ProtectedRoute>
+    ),
   },
   {
     type: "collapse",
@@ -44,7 +60,11 @@ const indexRoutes = [
     key: "profile",
     icon: <Icon fontSize="small">person</Icon>,
     route: "/profile",
-    component: <Profile />,
+    component: (
+      <ProtectedRoute>
+        <Profile />
+      </ProtectedRoute>
+    ),
   },
   // {
   //   type: "collapse",

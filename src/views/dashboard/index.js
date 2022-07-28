@@ -1,3 +1,5 @@
+import { useEffect } from "react";
+
 // @mui material components
 import Grid from "@mui/material/Grid";
 
@@ -20,8 +22,27 @@ import reportsLineChartData from "layouts/dashboard/data/reportsLineChartData";
 import Projects from "layouts/dashboard/components/Projects";
 import OrdersOverview from "layouts/dashboard/components/OrdersOverview";
 
+// Material Dashboard 2 React contexts
+import { setFetchDetails, useMaterialUIController } from "context";
+
+// api call
+import { getUserById, getCookie } from "api";
+
 function Dashboard() {
   const { sales, tasks } = reportsLineChartData;
+  const [controller, dispatch] = useMaterialUIController();
+
+  useEffect(() => {
+    const getUserInfo = async () => {
+      const token = await getCookie("askoacademy-token");
+      const res = await getUserById(controller?.userProfile?.id, token);
+      if (res?.success) {
+        // Dispatch Login
+        setFetchDetails(dispatch, res?.data);
+      }
+    };
+    getUserInfo();
+  }, []);
 
   return (
     <DashboardLayout>

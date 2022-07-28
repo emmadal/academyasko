@@ -76,6 +76,17 @@ export default function App() {
     document.scrollingElement.scrollTop = 0;
   }, [pathname]);
 
+  // Keep the Application persistence
+  const saveStateToLocalStorage = (currentState) => {
+    const serializedState = JSON.stringify(currentState);
+    localStorage.setItem("ASKO_STORE", serializedState);
+  };
+
+  useEffect(() => {
+    // This is a side-effect and belongs in an effect
+    saveStateToLocalStorage(controller);
+  }, [controller]);
+
   const getRoutes = (allRoutes) =>
     allRoutes.map((route) => {
       if (route.route) {
