@@ -2,11 +2,11 @@
 import Dashboard from "views/dashboard";
 import SignIn from "views/signin";
 import ResetPassword from "views/resetPassword";
-import Tables from "layouts/tables";
-import Billing from "layouts/billing";
-import Notifications from "layouts/notifications";
-import Profile from "layouts/profile";
-import SignUp from "layouts/authentication/sign-up";
+import Profile from "views/profile";
+import UsersList from "views/users-list";
+// import SignUp from "views/signup";
+// import Billing from "layouts/billing";
+// import Notifications from "layouts/notifications";
 
 // @mui icons
 import Icon from "@mui/material/Icon";
@@ -24,27 +24,19 @@ const indexRoutes = [
   },
   {
     type: "collapse",
-    name: "Tables",
-    key: "tables",
+    name: "Utilisateurs",
+    key: "users",
     icon: <Icon fontSize="small">table_view</Icon>,
-    route: "/tables",
-    component: <Tables />,
+    route: "/users",
+    component: <UsersList />,
   },
   {
     type: "collapse",
-    name: "Billing",
-    key: "billing",
-    icon: <Icon fontSize="small">receipt_long</Icon>,
-    route: "/billing",
-    component: <Billing />,
-  },
-  {
-    type: "collapse",
-    name: "Notifications",
-    key: "notifications",
-    icon: <Icon fontSize="small">notifications</Icon>,
-    route: "/notifications",
-    component: <Notifications />,
+    name: "Bulletins",
+    key: "reports",
+    icon: <Icon fontSize="small">table_view</Icon>,
+    route: "/reports",
+    component: <UsersList />,
   },
   {
     type: "collapse",
@@ -54,14 +46,30 @@ const indexRoutes = [
     route: "/profile",
     component: <Profile />,
   },
-  {
-    type: "collapse",
-    name: "Sign Up",
-    key: "sign-up",
-    icon: <Icon fontSize="small">assignment</Icon>,
-    route: "/authentication/sign-up",
-    component: <SignUp />,
-  },
+  // {
+  //   type: "collapse",
+  //   name: "Billing",
+  //   key: "billing",
+  //   icon: <Icon fontSize="small">receipt_long</Icon>,
+  //   route: "/billing",
+  //   component: <Billing />,
+  // },
+  // {
+  //   type: "collapse",
+  //   name: "Notifications",
+  //   key: "notifications",
+  //   icon: <Icon fontSize="small">notifications</Icon>,
+  //   route: "/notifications",
+  //   component: <Notifications />,
+  // },
+  // {
+  //   type: "collapse",
+  //   name: "Sign Up",
+  //   key: "sign-up",
+  //   icon: <Icon fontSize="small">assignment</Icon>,
+  //   route: "/signup",
+  //   component: <SignUp />,
+  // },
 ];
 
 export default indexRoutes;
