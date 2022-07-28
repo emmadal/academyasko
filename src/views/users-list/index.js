@@ -1,3 +1,5 @@
+import { useState } from "react";
+
 // @mui material components
 import Grid from "@mui/material/Grid";
 import Card from "@mui/material/Card";
@@ -5,6 +7,8 @@ import Card from "@mui/material/Card";
 // Material Dashboard 2 React components
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
+import MDButton from "components/MDButton";
+import UserModal from "components/UserModal";
 
 // Material Dashboard 2 React example components
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
@@ -19,10 +23,16 @@ import projectsTableData from "views/users-list/data/projectsTableData";
 function UsersList() {
   const { columns, rows } = authorsTableData();
   const { columns: pColumns, rows: pRows } = projectsTableData();
-
+  const [open, setOpen] = useState(false);
   return (
     <DashboardLayout>
       <DashboardNavbar />
+      <UserModal open={open} setOpen={setOpen} />
+      <MDBox mb={1}>
+        <MDButton variant="gradient" color="info" onClick={() => setOpen(!open)}>
+          Ajouter un utilisateur
+        </MDButton>
+      </MDBox>
       <MDBox pt={6} pb={3}>
         <Grid container spacing={6}>
           <Grid item xs={12}>
@@ -38,7 +48,7 @@ function UsersList() {
                 coloredShadow="info"
               >
                 <MDTypography variant="h6" color="white">
-                  Authors Table
+                  Liste des utilisateurs
                 </MDTypography>
               </MDBox>
               <MDBox pt={3}>
