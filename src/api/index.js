@@ -34,6 +34,23 @@ export const loginUser = (data) =>
   });
 
 /*
+Update user
+*/
+export const updateUser = (token, data, userId) =>
+  new Promise((resolve, reject) => {
+    const params = {
+      method: "POST",
+      headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+      redirect: "follow",
+      body: JSON.stringify({ ...data }),
+    };
+    fetch(`${API_URL}/users/${userId}/update`, params)
+      .then((response) => response.json())
+      .then((e) => resolve(e))
+      .catch((err) => reject(err));
+  });
+
+/*
 Get all user
 */
 export const getAllUsers = (token) =>

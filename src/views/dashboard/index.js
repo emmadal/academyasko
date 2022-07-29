@@ -1,4 +1,5 @@
-import { useEffect } from "react";
+/* eslint-disable react/function-component-definition */
+import { useEffect, useCallback } from "react";
 
 // @mui material components
 import Grid from "@mui/material/Grid";
@@ -32,16 +33,19 @@ function Dashboard() {
   const { sales, tasks } = reportsLineChartData;
   const [controller, dispatch] = useMaterialUIController();
 
+  const getUserDetails = useCallback(async () => {
+    const token = await getCookie("askoacademy-token");
+    const res = await getUserById(controller?.userProfile?.id, token);
+    if (res?.success) {
+      // Dispatch Login
+      setFetchDetails(dispatch, res?.data);
+    }
+  }, [dispatch]);
+
   useEffect(() => {
-    const getUserInfo = async () => {
-      const token = await getCookie("askoacademy-token");
-      const res = await getUserById(controller?.userProfile?.id, token);
-      if (res?.success) {
-        // Dispatch Login
-        setFetchDetails(dispatch, res?.data);
-      }
-    };
-    getUserInfo();
+    // Fetch User details onces
+    getUserDetails();
+    return () => null;
   }, []);
 
   return (

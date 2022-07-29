@@ -82,6 +82,7 @@ function MaterialUIControllerProvider({ children }) {
       email: "",
       birthdate: null,
       user_mobile_1: null,
+      description: "",
       login: "",
       user_type: "",
       exams: [],
