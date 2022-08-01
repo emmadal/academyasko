@@ -4,6 +4,7 @@ import SignIn from "views/signin";
 import ResetPassword from "views/resetPassword";
 import Profile from "views/profile";
 import UsersList from "views/users-list";
+import BroadCast from "views/broadcast";
 
 // import SignUp from "views/signup";
 // import Billing from "layouts/billing";
@@ -39,6 +40,18 @@ const indexRoutes = [
     component: (
       <ProtectedRoute>
         <UsersList />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    type: "collapse",
+    name: "Diffusion",
+    key: "broadcast",
+    icon: <Icon fontSize="small">camera</Icon>,
+    route: "/broadcast",
+    component: (
+      <ProtectedRoute>
+        <BroadCast />
       </ProtectedRoute>
     ),
   },
