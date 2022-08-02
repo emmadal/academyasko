@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import React, { useState } from "react";
 
 // prop-types is a library for typechecking of props
@@ -10,6 +11,10 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import CircularProgress from "@mui/material/CircularProgress";
+import InputLabel from "@mui/material/InputLabel";
+import MenuItem from "@mui/material/MenuItem";
+import FormControl from "@mui/material/FormControl";
+import Select from "@mui/material/Select";
 
 // Material Dashboard 2 React components
 import MDBox from "components/MDBox";
@@ -25,6 +30,12 @@ import * as Yup from "yup";
 import { registerUser } from "api";
 
 function UserModal({ open, setOpen }) {
+  const status = [
+    { id: 1, value: "coach", label: "Coach" },
+    { id: 2, value: "teacher", label: "Professeur" },
+    { id: 3, value: "student", label: "Autres(Ecoliers | Etudiants | Collégiens)" },
+    { id: 4, value: "admin", label: "Administrateur" },
+  ];
   const [isLoading, setIsLoading] = useState(false);
   const validation = useFormik({
     // enableReinitialize : use this flag when initial values needs to be changed
@@ -50,7 +61,6 @@ function UserModal({ open, setOpen }) {
       const res = await registerUser({ ...values, login: loginID });
       if (res?.success) {
         setIsLoading(false);
-        window.console.log(res);
         setOpen(false);
       } else {
         setIsLoading(false);
@@ -86,16 +96,25 @@ function UserModal({ open, setOpen }) {
               ) : null}
             </MDBox>
             <MDBox mb={2}>
-              <MDInput
-                name="user_type"
-                value={validation.values.user_type}
-                error={!!(validation.touched.user_type && validation.errors.user_type)}
-                onChange={validation.handleChange}
-                placeholder="Par exemple (eleve, ecolier, etudiant, coach ou professeur)"
-                type="text"
-                label="Status"
-                fullWidth
-              />
+              <FormControl fullWidth>
+                <InputLabel id="demo-simple-select-label">Status</InputLabel>
+                <Select
+                  name="user_type"
+                  labelId="demo-simple-select-label"
+                  id="demo-simple-select"
+                  error={!!(validation.touched.user_type && validation.errors.user_type)}
+                  value={validation.values.user_type}
+                  label="Status"
+                  onChange={validation.handleChange}
+                  sx={{ padding: "0.75rem" }}
+                >
+                  {status.map((item) => (
+                    <MenuItem key={item.id} value={item.value}>
+                      {item.label}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
               {validation.touched.user_type && validation.errors.user_type ? (
                 <MDTypography variant="caption" color="error">
                   {validation.errors.user_type}

@@ -7,6 +7,10 @@ import PropTypes from "prop-types";
 // @mui material components
 import Card from "@mui/material/Card";
 import CircularProgress from "@mui/material/CircularProgress";
+import InputLabel from "@mui/material/InputLabel";
+import MenuItem from "@mui/material/MenuItem";
+import FormControl from "@mui/material/FormControl";
+import Select from "@mui/material/Select";
 
 // Material Dashboard 2 React components
 import MDBox from "components/MDBox";
@@ -29,6 +33,12 @@ function ProfileInfoCard({ title, info, shadow }) {
   const values = [];
   const [controller, dispatch] = useMaterialUIController();
   const { userProfile } = controller;
+
+  const status = [
+    { id: 1, value: "coach", label: "Coach" },
+    { id: 2, value: "teacher", label: "Professeur" },
+    { id: 3, value: "student", label: "Autres(Ecoliers | Etudiants | Collégiens)" },
+  ];
 
   // Convert this form `objectKey` of the object key in to this `object key`
   Object.keys(info).forEach((el) => {
@@ -53,6 +63,7 @@ function ProfileInfoCard({ title, info, shadow }) {
       description: userProfile.description ?? "",
       email: userProfile.email || "",
       user_mobile_1: userProfile.user_mobile_1 ?? "",
+      user_type: userProfile.user_type ?? "",
     },
     validationSchema: Yup.object({
       description: Yup.string().required("Entrez la description de votre profil"),
@@ -133,6 +144,32 @@ function ProfileInfoCard({ title, info, shadow }) {
             {validation.touched.user_mobile_1 && validation.errors.user_mobile_1 ? (
               <MDTypography variant="caption" color="error">
                 {validation.errors.user_mobile_1}
+              </MDTypography>
+            ) : null}
+          </MDBox>
+          <MDBox mb={2} lineHeight={1}>
+            <FormControl fullWidth>
+              <InputLabel id="demo-simple-select-label">Status</InputLabel>
+              <Select
+                name="user_type"
+                labelId="demo-simple-select-label"
+                id="demo-simple-select"
+                error={!!(validation.touched.user_type && validation.errors.user_type)}
+                value={validation.values.user_type}
+                label="Status"
+                onChange={validation.handleChange}
+                sx={{ padding: "0.75rem" }}
+              >
+                {status.map((item) => (
+                  <MenuItem key={item.id} value={item.value}>
+                    {item.label}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+            {validation.touched.user_type && validation.errors.user_type ? (
+              <MDTypography variant="caption" color="error">
+                {validation.errors.user_type}
               </MDTypography>
             ) : null}
           </MDBox>
