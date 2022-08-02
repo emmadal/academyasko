@@ -1,43 +1,34 @@
-/**
-=========================================================
-* Material Dashboard 2 React - v2.1.0
-=========================================================
-
-* Product Page: https://www.creative-tim.com/product/material-dashboard-react
-* Copyright 2022 Creative Tim (https://www.creative-tim.com)
-
-Coded by www.creative-tim.com
-
- =========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-*/
-
-// react-routers components
-import { Link } from "react-router-dom";
+/* eslint-disable react/prop-types */
+import { useState } from "react";
 
 // prop-types is library for typechecking of props
 import PropTypes from "prop-types";
 
 // @mui material components
 import Card from "@mui/material/Card";
-import Divider from "@mui/material/Divider";
-import Tooltip from "@mui/material/Tooltip";
-import Icon from "@mui/material/Icon";
+import CircularProgress from "@mui/material/CircularProgress";
 
 // Material Dashboard 2 React components
 import MDBox from "components/MDBox";
+import MDInput from "components/MDInput";
+import MDButton from "components/MDButton";
 import MDTypography from "components/MDTypography";
 
-// Material Dashboard 2 React base styles
-import colors from "assets/theme/base/colors";
-import typography from "assets/theme/base/typography";
+// form validation with Formik
+import { useFormik } from "formik";
+import * as Yup from "yup";
 
-function ProfileInfoCard({ title, description, info, social, action, shadow }) {
+// Material Dashboard 2 React contexts
+import { setFetchDetails, useMaterialUIController } from "context";
+
+// API call
+import { getCookie, updateUser } from "api";
+
+function ProfileInfoCard({ title, info, shadow }) {
   const labels = [];
   const values = [];
-  const { socialMediaColors } = colors;
-  const { size } = typography;
+  const [controller, dispatch] = useMaterialUIController();
+  const { userProfile } = controller;
 
   // Convert this form `objectKey` of the object key in to this `object key`
   Object.keys(info).forEach((el) => {
@@ -54,65 +45,108 @@ function ProfileInfoCard({ title, description, info, social, action, shadow }) {
   // Push the object values into the values array
   Object.values(info).forEach((el) => values.push(el));
 
-  // Render the card info items
-  const renderItems = labels.map((label, key) => (
-    <MDBox key={label} display="flex" py={1} pr={2}>
-      <MDTypography variant="button" fontWeight="bold" textTransform="capitalize">
-        {label}: &nbsp;
-      </MDTypography>
-      <MDTypography variant="button" fontWeight="regular" color="text">
-        &nbsp;{values[key]}
-      </MDTypography>
-    </MDBox>
-  ));
-
-  // Render the card social media icons
-  const renderSocial = social.map(({ link, icon, color }) => (
-    <MDBox
-      key={color}
-      component="a"
-      href={link}
-      target="_blank"
-      rel="noreferrer"
-      fontSize={size.lg}
-      color={socialMediaColors[color].main}
-      pr={1}
-      pl={0.5}
-      lineHeight={1}
-    >
-      {icon}
-    </MDBox>
-  ));
+  const [isLoading, setIsLoading] = useState(false);
+  const validation = useFormik({
+    // enableReinitialize : use this flag when initial values needs to be changed
+    enableReinitialize: true,
+    initialValues: {
+      description: userProfile.description ?? "",
+      email: userProfile.email || "",
+      user_mobile_1: userProfile.user_mobile_1 ?? "",
+    },
+    validationSchema: Yup.object({
+      description: Yup.string().required("Entrez la description de votre profil"),
+      user_mobile_1: Yup.string().required("Veuillez entrer votre contact"),
+      email: Yup.string().required("Veuillez entrer votre Email"),
+    }),
+    onSubmit: async (data) => {
+      setIsLoading(!isLoading);
+      const token = getCookie("askoacademy-token");
+      const res = await updateUser(token, data, userProfile?.id);
+      if (res.success) {
+        setIsLoading(false);
+        setFetchDetails(dispatch, res?.data);
+      }
+      if (!res.success) {
+        setIsLoading(false);
+      }
+    },
+    validateOnChange: true,
+  });
 
   return (
-    <Card sx={{ height: "100%", boxShadow: !shadow && "none" }}>
+    <Card sx={{ height: "100%", boxShadow: !shadow && "none", width: "100%" }}>
       <MDBox display="flex" justifyContent="space-between" alignItems="center" pt={2} px={2}>
         <MDTypography variant="h6" fontWeight="medium" textTransform="capitalize">
           {title}
         </MDTypography>
-        <MDTypography component={Link} to={action.route} variant="body2" color="secondary">
-          <Tooltip title={action.tooltip} placement="top">
-            <Icon>edit</Icon>
-          </Tooltip>
-        </MDTypography>
       </MDBox>
       <MDBox p={2}>
-        <MDBox mb={2} lineHeight={1}>
-          <MDTypography variant="button" color="text" fontWeight="light">
-            {description}
-          </MDTypography>
-        </MDBox>
-        <MDBox opacity={0.3}>
-          <Divider />
-        </MDBox>
-        <MDBox>
-          {renderItems}
-          <MDBox display="flex" py={1} pr={2}>
-            <MDTypography variant="button" fontWeight="bold" textTransform="capitalize">
-              social: &nbsp;
-            </MDTypography>
-            {renderSocial}
+        <MDBox p={2} component="form" role="form">
+          <MDBox mb={2} lineHeight={1}>
+            <MDInput
+              name="description"
+              rows={3}
+              multiline
+              value={validation.values.description}
+              error={!!(validation.touched.description && validation.errors.description)}
+              onChange={validation.handleChange}
+              placeholder="Description"
+              type="text"
+              label="Description"
+              fullWidth
+            />
+            {validation.touched.description && validation.errors.description ? (
+              <MDTypography variant="caption" color="error">
+                {validation.errors.description}
+              </MDTypography>
+            ) : null}
           </MDBox>
+          <MDBox mb={2} lineHeight={1}>
+            <MDInput
+              name="email"
+              value={validation.values.email}
+              error={!!(validation.touched.email && validation.errors.email)}
+              onChange={validation.handleChange}
+              placeholder="Votre Email"
+              type="email"
+              label="Email"
+              fullWidth
+            />
+            {validation.touched.email && validation.errors.email ? (
+              <MDTypography variant="caption" color="error">
+                {validation.errors.email}
+              </MDTypography>
+            ) : null}
+          </MDBox>
+          <MDBox mb={2} lineHeight={1}>
+            <MDInput
+              name="user_mobile_1"
+              value={validation.values.user_mobile_1}
+              error={!!(validation.touched.user_mobile_1 && validation.errors.user_mobile_1)}
+              onChange={validation.handleChange}
+              placeholder="Votre Contact"
+              type="tel"
+              label="Contact"
+              fullWidth
+            />
+            {validation.touched.user_mobile_1 && validation.errors.user_mobile_1 ? (
+              <MDTypography variant="caption" color="error">
+                {validation.errors.user_mobile_1}
+              </MDTypography>
+            ) : null}
+          </MDBox>
+          <MDButton
+            variant="gradient"
+            color="info"
+            onClick={(e) => {
+              e.preventDefault();
+              validation.handleSubmit();
+              return false;
+            }}
+          >
+            {isLoading ? <CircularProgress color="white" size={20} /> : "Mettre à jour"}
+          </MDButton>
         </MDBox>
       </MDBox>
     </Card>
@@ -120,21 +154,13 @@ function ProfileInfoCard({ title, description, info, social, action, shadow }) {
 }
 
 // Setting default props for the ProfileInfoCard
-ProfileInfoCard.defaultProps = {
-  shadow: true,
-};
-
-// Typechecking props for the ProfileInfoCard
 ProfileInfoCard.propTypes = {
   title: PropTypes.string.isRequired,
-  description: PropTypes.string.isRequired,
   info: PropTypes.objectOf(PropTypes.string).isRequired,
-  social: PropTypes.arrayOf(PropTypes.object).isRequired,
   action: PropTypes.shape({
     route: PropTypes.string.isRequired,
     tooltip: PropTypes.string.isRequired,
   }).isRequired,
-  shadow: PropTypes.bool,
 };
 
 export default ProfileInfoCard;
