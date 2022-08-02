@@ -21,6 +21,7 @@ import MDAvatar from "components/MDAvatar";
 // Material Dashboard 2 React example components
 import DefaultProjectCard from "examples/Cards/ProjectCards/DefaultProjectCard";
 import ProfileInfoCard from "examples/Cards/InfoCards/ProfileInfoCard";
+import Settings from "views/profile/settings";
 
 // Material Dashboard 2 React base styles
 import breakpoints from "assets/theme/base/breakpoints";
@@ -157,7 +158,7 @@ function Header({ children }) {
                       cogs
                     </Icon>
                   }
-                  {...a11yProps(1)}
+                  {...a11yProps(2)}
                 />
               </Tabs>
               <MDTabPanel value={tabValue} index={0}>
@@ -277,6 +278,9 @@ function Header({ children }) {
                     </Grid>
                   </Grid>
                 </MDBox>
+              </MDTabPanel>
+              <MDTabPanel value={tabValue} index={2}>
+                <Settings />
               </MDTabPanel>
             </AppBar>
           </Grid>

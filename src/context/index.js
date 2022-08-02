@@ -53,6 +53,9 @@ function reducer(state, action) {
     case "FETCH_DETAILS": {
       return { ...state, userProfile: action.value };
     }
+    case "LOGOUT": {
+      return { ...state, isSignout: true, userProfile: null };
+    }
     default: {
       throw new Error(`Unhandled action type: ${action.type}`);
     }
@@ -135,6 +138,7 @@ const setDirection = (dispatch, value) => dispatch({ type: "DIRECTION", value })
 const setLayout = (dispatch, value) => dispatch({ type: "LAYOUT", value });
 const setDarkMode = (dispatch, value) => dispatch({ type: "DARKMODE", value });
 const setLogin = (dispatch, value) => dispatch({ type: "LOGIN", value });
+const setLogOut = (dispatch, value) => dispatch({ type: "LOGOUT", value });
 const setFetchDetails = (dispatch, value) => dispatch({ type: "FETCH_DETAILS", value });
 
 export {
@@ -151,5 +155,6 @@ export {
   setLayout,
   setDarkMode,
   setLogin,
+  setLogOut,
   setFetchDetails,
 };
