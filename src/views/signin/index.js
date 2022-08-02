@@ -12,7 +12,7 @@ import MDInput from "components/MDInput";
 import MDButton from "components/MDButton";
 
 // Authentication layout components
-import BasicLayout from "layouts/authentication/components/BasicLayout";
+import PageLayout from "molecules/PageLayout";
 
 // Material Dashboard 2 React contexts
 import { setLogin, useMaterialUIController } from "context";
@@ -66,7 +66,7 @@ function SignIn() {
     validateOnChange: true,
   });
   return (
-    <BasicLayout image={bgImage}>
+    <PageLayout image={bgImage}>
       <Card sx={{ width: "450px" }}>
         <MDBox
           variant="gradient"
@@ -141,14 +141,8 @@ function SignIn() {
           </MDBox>
         </MDBox>
       </Card>
-    </BasicLayout>
+    </PageLayout>
   );
 }
 
 export default SignIn;
-
-/**
- *   document.cookie = `askoacademy-token=${value.token}; path="/dashboard; Secure; SameSite=true"`;
-  dispatch({ type: "LOGIN", value });
-  navigate("/dashboard", { replace: true });
- */

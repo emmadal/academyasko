@@ -14,9 +14,9 @@ import MDBox from "components/MDBox";
 import MDButton from "components/MDButton";
 
 // Material Dashboard 2 React example components
-import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
-import DashboardNavbar from "examples/Navbars/DashboardNavbar";
-import Footer from "examples/Footer";
+import DashboardLayout from "molecules/DashboardLayout";
+import DashboardNavbar from "molecules/DashboardNavbar";
+import Footer from "molecules/Footer";
 
 function BroadCast() {
   const apiRef = useRef();
@@ -84,7 +84,7 @@ function BroadCast() {
     apiRef.current.on("knockingParticipant", handleKnockingParticipant);
   };
 
-  const handleReadyToClose = () => window.alert("Ready to close...");
+  const handleReadyToClose = () => window.console.log("Ready to close...");
 
   const generateRoomName = () => `askoacademy${Math.random() * 100}-${Date.now()}`;
 
