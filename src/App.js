@@ -1,3 +1,5 @@
+/* eslint-disable no-constant-condition */
+/* eslint-disable no-nested-ternary */
 import { useState, useEffect } from "react";
 
 // react-router components
@@ -17,7 +19,7 @@ import theme from "assets/theme";
 import themeDark from "assets/theme-dark";
 
 // Material Dashboard 2 React routes
-import indexRoutes from "routes";
+import { studentRoutes, teacherAndCoachRoutes, indexRoutes } from "routes";
 
 // Material Dashboard 2 React contexts
 import { useMaterialUIController, setMiniSidenav } from "context";
@@ -36,6 +38,7 @@ export default function App() {
     transparentSidenav,
     whiteSidenav,
     darkMode,
+    userProfile,
   } = controller;
   const [onMouseEnter, setOnMouseEnter] = useState(false);
   const { pathname } = useLocation();
@@ -86,6 +89,15 @@ export default function App() {
       return null;
     });
 
+  const routes =
+    userProfile?.user_type === "admin"
+      ? indexRoutes
+      : userProfile?.user_type === "teacher" || "coach"
+      ? teacherAndCoachRoutes
+      : userProfile?.user_type === "student"
+      ? studentRoutes
+      : [];
+
   return (
     <ThemeProvider theme={darkMode ? themeDark : theme}>
       <CssBaseline />
@@ -94,13 +106,13 @@ export default function App() {
           color={sidenavColor}
           brand={(transparentSidenav && !darkMode) || whiteSidenav ? brandDark : brandWhite}
           brandName="Askoacademy"
-          routes={indexRoutes}
+          routes={routes}
           onMouseEnter={handleOnMouseEnter}
           onMouseLeave={handleOnMouseLeave}
         />
       )}
       <Routes>
-        {getRoutes(indexRoutes)}
+        {getRoutes(routes)}
         <Route path="*" element={<Navigate to="/dashboard" />} />
       </Routes>
     </ThemeProvider>
