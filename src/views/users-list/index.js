@@ -25,7 +25,6 @@ function UsersList() {
   return (
     <DashboardLayout>
       <DashboardNavbar />
-      <UserModal open={open} setOpen={setOpen} />
       <MDBox mb={1}>
         <MDButton variant="gradient" color="info" onClick={() => setOpen(!open)}>
           Ajouter un utilisateur
@@ -62,6 +61,7 @@ function UsersList() {
           </Grid>
         </Grid>
       </MDBox>
+      <UserModal open={open} setOpen={setOpen} />
       <Footer />
     </DashboardLayout>
   );

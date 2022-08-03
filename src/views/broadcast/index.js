@@ -63,9 +63,9 @@ function BroadCast() {
   };
 
   const handleJitsiIFrameRef1 = (iframeRef) => {
-    iframeRef.style.border = "10px solid #3d3d3d";
+    iframeRef.style.border = "5px solid #3d3d3d";
     iframeRef.style.background = "#3d3d3d";
-    iframeRef.style.height = "650px";
+    iframeRef.style.height = "700px";
   };
 
   const handleApiReady = (apiObj) => {

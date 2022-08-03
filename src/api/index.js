@@ -12,7 +12,7 @@ export const registerUser = (data) =>
     };
     fetch(`${API_URL}/users/register`, params)
       .then((response) => response.json())
-      .then((e) => resolve(e.data.user))
+      .then((e) => resolve(e))
       .catch((err) => reject(err));
   });
 
@@ -44,7 +44,7 @@ export const updateUser = (token, data, userId) =>
       redirect: "follow",
       body: JSON.stringify({ ...data }),
     };
-    fetch(`${API_URL}/users/${userId}/update`, params)
+    fetch(`${API_URL}/users/${userId}`, params)
       .then((response) => response.json())
       .then((e) => resolve(e))
       .catch((err) => reject(err));

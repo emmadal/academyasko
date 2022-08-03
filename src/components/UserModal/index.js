@@ -46,13 +46,15 @@ function UserModal({ open, setOpen }) {
       password: "",
       user_mobile_1: "",
       user_type: "",
+      country: "",
     },
     validationSchema: Yup.object({
       password: Yup.string().min(6).required("Le mot de passe doit contenir 6 caractères"),
       user_type: Yup.string().required("Le Status est requis"),
       user_mobile_1: Yup.string().required("Veuillez entrer le contact"),
       email: Yup.string().required("Email requis"),
-      name: Yup.string().required("Veuillez entrer le Nom "),
+      name: Yup.string().required("Veuillez entrer le Nom"),
+      country: Yup.string().required("Veuillez entrer le Pays"),
     }),
     onSubmit: async (values) => {
       setIsLoading(!isLoading);
@@ -61,6 +63,7 @@ function UserModal({ open, setOpen }) {
       const res = await registerUser({ ...values, login: loginID });
       if (res?.success) {
         setIsLoading(false);
+        validation.resetForm();
         setOpen(false);
       } else {
         setIsLoading(false);
@@ -72,7 +75,7 @@ function UserModal({ open, setOpen }) {
   return (
     <Dialog open={open} onClose={handleClose}>
       <MDBox component="form" role="form">
-        <DialogTitle>Création d&#39;un nouvel utilsateur</DialogTitle>
+        <DialogTitle>Création d&#39;un nouvel utilisateur</DialogTitle>
         <DialogContent>
           <DialogContentText>
             Créer un nouvel utilisateur pour qu&#39;il puisse beneficier des services de
@@ -92,6 +95,37 @@ function UserModal({ open, setOpen }) {
               {validation.touched.name && validation.errors.name ? (
                 <MDTypography variant="caption" color="error">
                   {validation.errors.name}
+                </MDTypography>
+              ) : null}
+            </MDBox>
+            <MDBox mb={2}>
+              <MDInput
+                value={
+                  validation.values.name.length
+                    ? `asko-${validation.values.name
+                        .split(" ")[0]
+                        .toLocaleLowerCase()}${new Date().getFullYear()}`
+                    : ""
+                }
+                onChange={validation.handleChange}
+                type="text"
+                label="ID Connexion Askoacademy"
+                fullWidth
+              />
+            </MDBox>
+            <MDBox mb={2}>
+              <MDInput
+                name="country"
+                value={validation.values.country}
+                error={!!(validation.touched.country && validation.errors.country)}
+                onChange={validation.handleChange}
+                type="text"
+                label="Pays"
+                fullWidth
+              />
+              {validation.touched.country && validation.errors.country ? (
+                <MDTypography variant="caption" color="error">
+                  {validation.errors.country}
                 </MDTypography>
               ) : null}
             </MDBox>
