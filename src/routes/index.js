@@ -6,6 +6,7 @@ import Profile from "views/profile";
 import UsersList from "views/users-list";
 import BroadCast from "views/broadcast";
 import Message from "views/message";
+import Attribution from "views/attribution";
 
 // Protected Route
 import ProtectedRoute from "routes/ProtectedRoute";
@@ -72,7 +73,7 @@ export const indexRoutes = [
     route: "/attribution",
     component: (
       <ProtectedRoute>
-        <UsersList />
+        <Attribution />
       </ProtectedRoute>
     ),
   },
