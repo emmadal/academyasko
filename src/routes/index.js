@@ -7,6 +7,7 @@ import UsersList from "views/users-list";
 import BroadCast from "views/broadcast";
 import Message from "views/message";
 import Attribution from "views/attribution";
+import Trainers from "views/trainers";
 
 // Protected Route
 import ProtectedRoute from "routes/ProtectedRoute";
@@ -89,6 +90,18 @@ export const indexRoutes = [
       </ProtectedRoute>
     ),
   },
+  {
+    type: "collapse",
+    name: "Formateurs",
+    key: "trainers",
+    icon: <Icon fontSize="small">groups</Icon>,
+    route: "/trainers",
+    component: (
+      <ProtectedRoute>
+        <Trainers />
+      </ProtectedRoute>
+    ),
+  },
 ];
 
 export const teacherAndCoachRoutes = [
@@ -156,6 +169,18 @@ export const studentRoutes = [
     component: (
       <ProtectedRoute>
         <Profile />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    type: "collapse",
+    name: "Formateurs",
+    key: "trainers",
+    icon: <Icon fontSize="small">groups</Icon>,
+    route: "/trainers",
+    component: (
+      <ProtectedRoute>
+        <Trainers />
       </ProtectedRoute>
     ),
   },
