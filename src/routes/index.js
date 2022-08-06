@@ -8,6 +8,7 @@ import BroadCast from "views/broadcast";
 import Message from "views/message";
 import Attribution from "views/attribution";
 import Trainers from "views/trainers";
+import Level from "views/level";
 
 // Protected Route
 import ProtectedRoute from "routes/ProtectedRoute";
@@ -99,6 +100,18 @@ export const indexRoutes = [
     component: (
       <ProtectedRoute>
         <Trainers />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    type: "collapse",
+    name: "Niveau d'étude",
+    key: "level",
+    icon: <Icon fontSize="small">compress</Icon>,
+    route: "/levels",
+    component: (
+      <ProtectedRoute>
+        <Level />
       </ProtectedRoute>
     ),
   },

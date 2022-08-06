@@ -95,3 +95,69 @@ export const getCookie = (cookieName) => {
   }
   return name ?? "";
 };
+
+/*
+Create level
+*/
+export const createLevel = (title, token) =>
+  new Promise((resolve, reject) => {
+    const params = {
+      method: "POST",
+      headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+      redirect: "follow",
+      body: JSON.stringify({ title }),
+    };
+    fetch(`${API_URL}/levels`, params)
+      .then((response) => response.json())
+      .then((e) => resolve(e))
+      .catch((err) => reject(err));
+  });
+
+/*
+Get All levels
+*/
+export const getAllLevels = (token) =>
+  new Promise((resolve, reject) => {
+    const params = {
+      method: "GET",
+      headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+      redirect: "follow",
+    };
+    fetch(`${API_URL}/levels`, params)
+      .then((response) => response.json())
+      .then((e) => resolve(e))
+      .catch((err) => reject(err));
+  });
+
+/*
+Delete level
+*/
+export const deleteLevel = (id, token) =>
+  new Promise((resolve, reject) => {
+    const params = {
+      method: "DELETE",
+      headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+      redirect: "follow",
+      body: JSON.stringify({ id }),
+    };
+    fetch(`${API_URL}/levels/${id}`, params)
+      .then((response) => response.json())
+      .then((e) => resolve(e))
+      .catch((err) => reject(err));
+  });
+/*
+Update level
+*/
+export const updateLevel = (title, id, token) =>
+  new Promise((resolve, reject) => {
+    const params = {
+      method: "PUT",
+      headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+      redirect: "follow",
+      body: JSON.stringify({ id, title }),
+    };
+    fetch(`${API_URL}/levels/${id}`, params)
+      .then((response) => response.json())
+      .then((e) => resolve(e))
+      .catch((err) => reject(err));
+  });
