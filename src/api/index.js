@@ -56,7 +56,7 @@ Get all user
 export const getAllUsers = (token) =>
   new Promise((resolve, reject) => {
     const params = {
-      method: " GET",
+      method: "GET",
       headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
       redirect: "follow",
     };

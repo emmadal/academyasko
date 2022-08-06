@@ -29,12 +29,15 @@ import * as Yup from "yup";
 // API call
 import { registerUser } from "api";
 
-function UserModal({ open, setOpen }) {
+function UserModal({ open, setOpen, setErr, setSuccess }) {
   const status = [
+    { id: 7, value: "admin", label: "Administrateur" },
     { id: 1, value: "coach", label: "Coach" },
+    { id: 4, value: "schoolboy", label: "Ecolier" },
+    { id: 3, value: "student", label: "Etudiant" },
+    { id: 5, value: "college_student", label: "Collégien" },
     { id: 2, value: "teacher", label: "Professeur" },
-    { id: 3, value: "student", label: "Autres(Ecoliers | Etudiants | Collégiens)" },
-    { id: 4, value: "admin", label: "Administrateur" },
+    { id: 6, value: "high_school_student", label: "Lycéen" },
   ];
   const [isLoading, setIsLoading] = useState(false);
   const validation = useFormik({
@@ -64,9 +67,12 @@ function UserModal({ open, setOpen }) {
       if (res?.success) {
         setIsLoading(false);
         validation.resetForm();
+        setSuccess("Nouvel utilisateur ajouté");
         setOpen(false);
       } else {
+        setErr("Un problème est survenue. Veuillez ressayer");
         setIsLoading(false);
+        setOpen(false);
       }
     },
     validateOnChange: true,
@@ -228,5 +234,7 @@ function UserModal({ open, setOpen }) {
 UserModal.propTypes = {
   open: PropTypes.bool.isRequired,
   setOpen: PropTypes.func.isRequired,
+  setErr: PropTypes.func.isRequired,
+  setSuccess: PropTypes.func.isRequired,
 };
 export default UserModal;
