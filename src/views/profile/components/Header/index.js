@@ -1,3 +1,4 @@
+/* eslint-disable no-nested-ternary */
 import { useState, useEffect } from "react";
 
 // prop-types is a library for typechecking of props.
@@ -113,7 +114,19 @@ function Header({ children }) {
                 {userProfile?.name}
               </MDTypography>
               <MDTypography variant="button" color="text" fontWeight="regular">
-                {userProfile?.user_type.toUpperCase()}
+                {userProfile?.user_type === "teacher"
+                  ? "Professeur"
+                  : userProfile?.user_type === "coach"
+                  ? "Coach"
+                  : userProfile?.user_type === "student"
+                  ? "Etudiant"
+                  : userProfile?.user_type === "schoolboy"
+                  ? "Ecolier"
+                  : userProfile?.user_type === "high_school_student"
+                  ? "Lycéen"
+                  : userProfile?.user_type === "college_student"
+                  ? "Collégien"
+                  : "Admin"}
               </MDTypography>
             </MDBox>
           </Grid>
@@ -129,15 +142,17 @@ function Header({ children }) {
                   }
                   {...a11yProps(0)}
                 />
-                <Tab
-                  label="Mes Tâches"
-                  icon={
-                    <Icon fontSize="small" sx={{ mt: -0.25 }}>
-                      clipboard
-                    </Icon>
-                  }
-                  {...a11yProps(1)}
-                />
+                {userProfile?.user_type === "admin" ? null : (
+                  <Tab
+                    label="Mes Tâches"
+                    icon={
+                      <Icon fontSize="small" sx={{ mt: -0.25 }}>
+                        clipboard
+                      </Icon>
+                    }
+                    {...a11yProps(1)}
+                  />
+                )}
                 <Tab
                   label="Paramètres"
                   icon={
@@ -145,16 +160,18 @@ function Header({ children }) {
                       cogs
                     </Icon>
                   }
-                  {...a11yProps(2)}
+                  {...a11yProps(userProfile?.user_type === "admin" ? 1 : 2)}
                 />
               </Tabs>
               <MDTabPanel value={tabValue} index={0}>
                 <Resume />
               </MDTabPanel>
-              <MDTabPanel value={tabValue} index={1}>
-                <Tasks />
-              </MDTabPanel>
-              <MDTabPanel value={tabValue} index={2}>
+              {userProfile?.user_type === "admin" ? null : (
+                <MDTabPanel value={tabValue} index={1}>
+                  <Tasks />
+                </MDTabPanel>
+              )}
+              <MDTabPanel value={tabValue} index={userProfile?.user_type === "admin" ? 1 : 2}>
                 <Settings />
               </MDTabPanel>
             </AppBar>

@@ -53,7 +53,6 @@ function ProfileInfoCard({ title, info, shadow }) {
       description: userProfile.description ?? "",
       email: userProfile.email || "",
       user_mobile_1: userProfile.user_mobile_1 ?? "",
-      user_type: userProfile.user_type ?? "",
     },
     validationSchema: Yup.object({
       description: Yup.string().required("Entrez la description de votre profil"),
@@ -136,15 +135,6 @@ function ProfileInfoCard({ title, info, shadow }) {
                 {validation.errors.user_mobile_1}
               </MDTypography>
             ) : null}
-          </MDBox>
-          <MDBox mb={2} lineHeight={1}>
-            <MDInput
-              value={validation.values.user_type}
-              onChange={validation.handleChange}
-              placeholder="Status"
-              label="Status"
-              fullWidth
-            />
           </MDBox>
           <MDButton
             variant="gradient"

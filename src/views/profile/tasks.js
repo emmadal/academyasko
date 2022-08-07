@@ -1,3 +1,4 @@
+/* eslint-disable no-constant-condition */
 import { useState } from "react";
 
 // Material Dashboard 2 React components
@@ -53,57 +54,59 @@ function Tasks() {
                 color: "info",
                 label: "Consulter l'exercice",
               }}
-              authors={[{ image: userProfile?.mediaURL ?? team1, name: userProfile?.name }]}
+              authors={[{ image: userProfile?.avatar ?? team1, name: userProfile?.name }]}
             />
           </Grid>
         </Grid>
       </MDBox>
-      <MDBox mb={1} mt={2}>
-        <MDTypography variant="h3" color="dark" fontWeight="bold">
-          Examens
-        </MDTypography>
-        <MDTypography variant="body2" color="dark">
-          Rédigez vos sujets d&#39;examen ci-dessous.
-        </MDTypography>
-        <MDBox mt={2}>
-          <ReactQuill
-            theme="snow"
-            value={value}
-            onChange={setValue}
-            modules={{
-              toolbar: [
-                [{ header: [1, 2, 3, 4, 5, 6, false] }],
-                ["bold", "italic", "underline", "strike", "blockquote"],
-                [{ list: "ordered" }, { list: "bullet" }, { indent: "-1" }, { indent: "+1" }],
-                ["link", "image"],
-                ["clean"],
-                ["print"],
-              ],
-            }}
-            formats={[
-              "header",
-              "bold",
-              "italic",
-              "underline",
-              "strike",
-              "blockquote",
-              "list",
-              "bullet",
-              "indent",
-              "link",
-              "image",
-            ]}
-          />
-          <MDButton
-            variant="gradient"
-            color="info"
-            sx={{ marginTop: 5 }}
-            onClick={() => window.console.log(value)}
-          >
-            Ajouter l&#39;examen
-          </MDButton>
+      {userProfile?.user_type === "teacher" ? (
+        <MDBox mb={1} mt={2}>
+          <MDTypography variant="h3" color="dark" fontWeight="bold">
+            Examens
+          </MDTypography>
+          <MDTypography variant="body2" color="dark">
+            Rédigez vos sujets d&#39;examen ci-dessous.
+          </MDTypography>
+          <MDBox mt={2}>
+            <ReactQuill
+              theme="snow"
+              value={value}
+              onChange={setValue}
+              modules={{
+                toolbar: [
+                  [{ header: [1, 2, 3, 4, 5, 6, false] }],
+                  ["bold", "italic", "underline", "strike", "blockquote"],
+                  [{ list: "ordered" }, { list: "bullet" }, { indent: "-1" }, { indent: "+1" }],
+                  ["link", "image"],
+                  ["clean"],
+                  ["print"],
+                ],
+              }}
+              formats={[
+                "header",
+                "bold",
+                "italic",
+                "underline",
+                "strike",
+                "blockquote",
+                "list",
+                "bullet",
+                "indent",
+                "link",
+                "image",
+              ]}
+            />
+            <MDButton
+              variant="gradient"
+              color="info"
+              sx={{ marginTop: 5 }}
+              onClick={() => window.console.log(value)}
+            >
+              Ajouter l&#39;examen
+            </MDButton>
+          </MDBox>
         </MDBox>
-      </MDBox>
+      ) : null}
       <TaskAlert open={open} setOpen={setOpen} />
     </>
   );
