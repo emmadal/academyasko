@@ -1,125 +1,92 @@
-// react-router-dom components
-import { Link } from "react-router-dom";
+/* eslint-disable camelcase */
+import { useState } from "react";
 
 // prop-types is a library for typechecking of props
 import PropTypes from "prop-types";
 
 // @mui material components
-import Card from "@mui/material/Card";
-import CardMedia from "@mui/material/CardMedia";
 import Tooltip from "@mui/material/Tooltip";
+import Accordion from "@mui/material/Accordion";
+import AccordionDetails from "@mui/material/AccordionDetails";
+import AccordionSummary from "@mui/material/AccordionSummary";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 
 // Material Dashboard 2 React components
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
-import MDButton from "components/MDButton";
 import MDAvatar from "components/MDAvatar";
 
-function TaskCard({ image, label, title, description, action, authors }) {
-  const renderAuthors = authors.map(({ image: media, name }) => (
-    <Tooltip key={name} title={name} placement="bottom">
-      <MDAvatar
-        src={media}
-        alt={name}
-        size="xs"
-        sx={({ borders: { borderWidth }, palette: { white } }) => ({
-          border: `${borderWidth[2]} solid ${white.main}`,
-          cursor: "pointer",
-          position: "relative",
-          ml: -1.25,
+// Material Dashboard 2 React example components
+import TimelineItem from "examples/Timeline/TimelineItem";
 
-          "&:hover, &:focus": {
-            zIndex: "10",
-          },
-        })}
-      />
+import pxToRem from "assets/theme-dark/functions/pxToRem";
+
+// Avatar component
+import Avatar from "react-avatar";
+
+function TaskCard({ title, description, authors, date_begin, date_end }) {
+  const [expanded, setExpanded] = useState(false);
+
+  const handleChange = (panel) => (event, isExpanded) => setExpanded(isExpanded ? panel : false);
+
+  const renderAuthors = authors.map((author) => (
+    <Tooltip key={author?.name} title={author?.name}>
+      {author?.image ? (
+        <MDAvatar
+          src={author?.image}
+          alt={author?.name}
+          shadow="sm"
+          size="xs"
+          sx={({ borders: { borderWidth }, palette: { white } }) => ({
+            border: `${borderWidth[2]} solid ${white.main}`,
+            cursor: "pointer",
+            position: "relative",
+            ml: -1.25,
+
+            "&:hover, &:focus": {
+              zIndex: "10",
+            },
+          })}
+        />
+      ) : (
+        <Avatar name={`${author?.name}`} round size={pxToRem(24)} />
+      )}
     </Tooltip>
   ));
 
   return (
-    <Card
-      sx={{
-        display: "flex",
-        flexDirection: "column",
-        backgroundColor: "transparent",
-        boxShadow: "none",
-        overflow: "visible",
-      }}
-    >
-      <MDBox position="relative" width="100.25%" shadow="xl" borderRadius="xl">
-        <CardMedia
-          src={image}
-          component="img"
-          title={title}
-          sx={{
-            maxWidth: "100%",
-            margin: 0,
-            boxShadow: ({ boxShadows: { md } }) => md,
-            objectFit: "cover",
-            objectPosition: "center",
-          }}
-        />
-      </MDBox>
-      <MDBox mt={1} mx={0.5}>
-        <MDTypography variant="button" fontWeight="regular" color="text" textTransform="capitalize">
-          {label}
+    <Accordion expanded={expanded === "panel1"} onChange={handleChange("panel1")}>
+      <AccordionSummary
+        expandIcon={<ExpandMoreIcon />}
+        aria-controls="panel1bh-content"
+        id="panel1bh-header"
+      >
+        <MDTypography variant="h5" fontWeight="bold" color="dark" textTransform="capitalize">
+          {title}
         </MDTypography>
-        <MDBox mb={1}>
-          {action.type === "internal" ? (
-            <MDTypography
-              component={Link}
-              to={action.route}
-              variant="h5"
-              textTransform="capitalize"
-            >
-              {title}
-            </MDTypography>
-          ) : (
-            <MDTypography
-              component="a"
-              href={action.route}
-              target="_blank"
-              rel="noreferrer"
-              variant="h5"
-              textTransform="capitalize"
-            >
-              {title}
-            </MDTypography>
-          )}
+      </AccordionSummary>
+      <AccordionDetails>
+        <MDTypography variant="text" color="text">
+          {description}
+        </MDTypography>
+        <MDBox>
+          <TimelineItem
+            color="success"
+            icon="notifications"
+            title="Date de début"
+            dateTime={date_begin}
+          />
+          <TimelineItem
+            color="error"
+            icon="inventory_2"
+            title="Date de fin"
+            dateTime={date_end}
+            lastItem
+          />
         </MDBox>
-        <MDBox mb={3} lineHeight={0}>
-          <MDTypography variant="button" fontWeight="light" color="text">
-            {description}
-          </MDTypography>
-        </MDBox>
-        <MDBox display="flex" justifyContent="space-between" alignItems="center">
-          {action.type === "internal" ? (
-            <MDButton
-              component={Link}
-              to={action.route}
-              variant="outlined"
-              size="small"
-              color={action.color}
-            >
-              {action.label}
-            </MDButton>
-          ) : (
-            <MDButton
-              component="a"
-              href={action.route}
-              target="_blank"
-              rel="noreferrer"
-              variant="outlined"
-              size="small"
-              color={action.color}
-            >
-              {action.label}
-            </MDButton>
-          )}
-          <MDBox display="flex">{renderAuthors}</MDBox>
-        </MDBox>
-      </MDBox>
-    </Card>
+        <MDBox ml={2}>{renderAuthors}</MDBox>
+      </AccordionDetails>
+    </Accordion>
   );
 }
 
@@ -130,26 +97,10 @@ TaskCard.defaultProps = {
 
 // Typechecking props for the DefaultProjectCard
 TaskCard.propTypes = {
-  image: PropTypes.string.isRequired,
-  label: PropTypes.string.isRequired,
   title: PropTypes.string.isRequired,
   description: PropTypes.string.isRequired,
-  action: PropTypes.shape({
-    type: PropTypes.oneOf(["external", "internal"]),
-    route: PropTypes.string.isRequired,
-    color: PropTypes.oneOf([
-      "primary",
-      "secondary",
-      "info",
-      "success",
-      "warning",
-      "error",
-      "light",
-      "dark",
-      "white",
-    ]).isRequired,
-    label: PropTypes.string.isRequired,
-  }).isRequired,
+  date_begin: PropTypes.string.isRequired,
+  date_end: PropTypes.string.isRequired,
   authors: PropTypes.arrayOf(PropTypes.object),
 };
 

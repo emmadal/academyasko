@@ -1,18 +1,15 @@
 /* eslint-disable no-constant-condition */
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 // Material Dashboard 2 React components
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
 import MDButton from "components/MDButton";
 import TaskAlert from "components/TaskAlert";
+import MDAlert from "components/MDAlert";
 
 // @mui material components
 import Grid from "@mui/material/Grid";
-
-// Images
-import homeDecor1 from "assets/images/home-decor-1.jpg";
-import team1 from "assets/images/team-1.jpg";
 
 // Material Dashboard 2 React example components
 import TaskCard from "molecules/TaskCard";
@@ -22,15 +19,40 @@ import { useMaterialUIController } from "context";
 
 import ReactQuill from "react-quill";
 
+import { getExercicesByAuthor, getCookie } from "api";
+
 function Tasks() {
   const [open, setOpen] = useState(false);
   const [controller] = useMaterialUIController();
+  const [exercices, setExercices] = useState([]);
+  const token = getCookie("askoacademy-token");
   const { userProfile } = controller;
+  const [err, setErr] = useState("");
+  const [success, setSuccess] = useState("");
   const [value, setValue] = useState("");
+
+  const getExercices = async () => {
+    const res = await getExercicesByAuthor(userProfile?.id, token);
+    if (res.success) {
+      setExercices([...res.data]);
+    }
+  };
+
+  useEffect(() => getExercices(), []);
 
   return (
     <>
       <MDBox pt={2} px={2} lineHeight={1.25}>
+        {err && (
+          <MDAlert color="error" dismissible onClick={() => setErr("")}>
+            {err}
+          </MDAlert>
+        )}
+        {success && (
+          <MDAlert color="success" dismissible onClick={() => setSuccess("")}>
+            {success}
+          </MDAlert>
+        )}
         <MDButton variant="gradient" color="info" mb={2} onClick={() => setOpen(!open)}>
           Ajouter un exercice
         </MDButton>
@@ -41,22 +63,18 @@ function Tasks() {
         </MDBox>
       </MDBox>
       <MDBox p={2}>
-        <Grid container spacing={6}>
-          <Grid item xs={12} md={6} xl={3}>
-            <TaskCard
-              image={homeDecor1}
-              label="project #2"
-              title="modern"
-              description="As Uber works through a huge amount of internal management turmoil."
-              action={{
-                type: "internal",
-                route: "/pages/profile/profile-overview",
-                color: "info",
-                label: "Consulter l'exercice",
-              }}
-              authors={[{ image: userProfile?.avatar ?? team1, name: userProfile?.name }]}
-            />
-          </Grid>
+        <Grid container spacing={3}>
+          {exercices.map((exercice) => (
+            <Grid item xs={12} md={4} xl={4} key={exercice?.uuid}>
+              <TaskCard
+                title={exercice?.title}
+                date_begin={exercice?.date_begin}
+                date_end={exercice?.date_end}
+                description={exercice?.description}
+                authors={[{ image: userProfile?.avatar ?? "", name: userProfile?.name }]}
+              />
+            </Grid>
+          ))}
         </Grid>
       </MDBox>
       {userProfile?.user_type === "teacher" ? (
@@ -107,7 +125,13 @@ function Tasks() {
           </MDBox>
         </MDBox>
       ) : null}
-      <TaskAlert open={open} setOpen={setOpen} />
+      <TaskAlert
+        open={open}
+        setOpen={setOpen}
+        authorId={userProfile?.id}
+        setSuccess={setSuccess}
+        setErr={setErr}
+      />
     </>
   );
 }

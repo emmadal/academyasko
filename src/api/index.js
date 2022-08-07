@@ -177,3 +177,37 @@ export const lockAndUnclockAccount = (userId, token) =>
       .then((e) => resolve(e))
       .catch((err) => reject(err));
   });
+
+/*
+Create exercise
+*/
+export const createExercise = (data, token) =>
+  new Promise((resolve, reject) => {
+    const params = {
+      method: "POST",
+      headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+      redirect: "follow",
+      body: JSON.stringify({ ...data }),
+    };
+    fetch(`${API_URL}/exercices`, params)
+      .then((response) => response.json())
+      .then((e) => resolve(e))
+      .catch((err) => reject(err));
+  });
+
+/*
+Get exercise by author
+*/
+export const getExercicesByAuthor = (authorId, token) =>
+  new Promise((resolve, reject) => {
+    const params = {
+      method: "GET",
+      headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+      redirect: "follow",
+      // body: JSON.stringify({ author_id: authorId }),
+    };
+    fetch(`${API_URL}/teacher/${authorId}/exercices`, params)
+      .then((response) => response.json())
+      .then((e) => resolve(e))
+      .catch((err) => reject(err));
+  });
