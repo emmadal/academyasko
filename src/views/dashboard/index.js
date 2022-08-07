@@ -1,3 +1,4 @@
+/* eslint-disable no-constant-condition */
 /* eslint-disable react/function-component-definition */
 import { useEffect, useCallback } from "react";
 
@@ -10,7 +11,6 @@ import MDBox from "components/MDBox";
 // Material Dashboard 2 React example components
 import DashboardLayout from "molecules/DashboardLayout";
 import DashboardNavbar from "molecules/DashboardNavbar";
-import Footer from "molecules/Footer";
 import ReportsBarChart from "examples/Charts/BarCharts/ReportsBarChart";
 import ReportsLineChart from "examples/Charts/LineCharts/ReportsLineChart";
 import StatisticsCard from "views/dashboard/statistics-cards";
@@ -20,7 +20,8 @@ import reportsBarChartData from "layouts/dashboard/data/reportsBarChartData";
 import reportsLineChartData from "layouts/dashboard/data/reportsLineChartData";
 
 // Dashboard components
-import Projects from "layouts/dashboard/components/Projects";
+import Projects from "views/dashboard/components/Projects";
+import Client from "views/dashboard/components/Client";
 import OrdersOverview from "layouts/dashboard/components/OrdersOverview";
 
 // Material Dashboard 2 React contexts
@@ -125,18 +126,19 @@ function Dashboard() {
             </MDBox>
           </>
         )}
-        <MDBox>
-          <Grid container spacing={3}>
-            <Grid item xs={12} md={6} lg={8}>
-              <Projects />
+        {userProfile?.user_type !== "admin" ? (
+          <MDBox>
+            <Grid container spacing={3}>
+              <Grid item xs={12} md={6} lg={8}>
+                {userProfile?.user_type === "teacher" || "coach" ? <Client /> : <Projects />}
+              </Grid>
+              <Grid item xs={12} md={6} lg={4}>
+                <OrdersOverview />
+              </Grid>
             </Grid>
-            <Grid item xs={12} md={6} lg={4}>
-              <OrdersOverview />
-            </Grid>
-          </Grid>
-        </MDBox>
+          </MDBox>
+        ) : null}
       </MDBox>
-      <Footer />
     </DashboardLayout>
   );
 }

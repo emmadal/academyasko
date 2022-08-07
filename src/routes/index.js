@@ -58,18 +58,6 @@ export const indexRoutes = [
   },
   {
     type: "collapse",
-    name: "Bulletins",
-    key: "reports",
-    icon: <Icon fontSize="small">table_view</Icon>,
-    route: "/reports",
-    component: (
-      <ProtectedRoute>
-        <Report />
-      </ProtectedRoute>
-    ),
-  },
-  {
-    type: "collapse",
     name: "Attribution",
     key: "attribution",
     icon: <Icon fontSize="small">import_export</Icon>,
@@ -82,22 +70,22 @@ export const indexRoutes = [
   },
   {
     type: "collapse",
-    name: "Messagerie",
-    key: "messagerie",
-    icon: <Icon fontSize="small">message</Icon>,
-    route: "/messagerie",
+    name: "Niveau d'étude",
+    key: "level",
+    icon: <Icon fontSize="small">compress</Icon>,
+    route: "/levels",
     component: (
       <ProtectedRoute>
-        <Message />
+        <Level />
       </ProtectedRoute>
     ),
   },
   {
     type: "collapse",
-    name: "Formateurs",
-    key: "trainers",
-    icon: <Icon fontSize="small">groups</Icon>,
-    route: "/trainers",
+    name: "Diplomes",
+    key: "graduate",
+    icon: <Icon fontSize="small">school</Icon>,
+    route: "/graduate",
     component: (
       <ProtectedRoute>
         <Trainers />
@@ -106,13 +94,13 @@ export const indexRoutes = [
   },
   {
     type: "collapse",
-    name: "Niveau d'étude",
-    key: "level",
-    icon: <Icon fontSize="small">compress</Icon>,
-    route: "/levels",
+    name: "Messagerie",
+    key: "messagerie",
+    icon: <Icon fontSize="small">message</Icon>,
+    route: "/messagerie",
     component: (
       <ProtectedRoute>
-        <Level />
+        <Message />
       </ProtectedRoute>
     ),
   },
@@ -132,6 +120,18 @@ export const teacherAndCoachRoutes = [
     icon: <Icon fontSize="small">dashboard</Icon>,
     type: "collapse",
     key: "dashboard",
+  },
+  {
+    type: "collapse",
+    name: "Bulletins",
+    key: "reports",
+    icon: <Icon fontSize="small">table_view</Icon>,
+    route: "/reports",
+    component: (
+      <ProtectedRoute>
+        <Report />
+      </ProtectedRoute>
+    ),
   },
   {
     type: "collapse",
