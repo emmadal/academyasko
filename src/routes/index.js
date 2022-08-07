@@ -7,6 +7,7 @@ import UsersList from "views/users-list";
 import BroadCast from "views/broadcast";
 import Message from "views/message";
 import Attribution from "views/attribution";
+import Report from "views/reports";
 import Trainers from "views/trainers";
 import Level from "views/level";
 
@@ -63,7 +64,7 @@ export const indexRoutes = [
     route: "/reports",
     component: (
       <ProtectedRoute>
-        <UsersList />
+        <Report />
       </ProtectedRoute>
     ),
   },

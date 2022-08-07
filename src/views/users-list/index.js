@@ -27,7 +27,7 @@ import Footer from "molecules/Footer";
 import DataTable from "views/users-list/DataTable";
 
 // API call
-import { getAllUsers, getCookie } from "api";
+import { getAllUsers, getCookie, lockAndUnclockAccount } from "api";
 
 // Avatar component
 import Avatar from "react-avatar";
@@ -122,7 +122,13 @@ function UsersList() {
           <IconButton aria-label="visibility" onClick={toggleDrawer("right", true, user)}>
             <VisibilityIcon color="info" fontSize="medium" />
           </IconButton>
-          <IconButton aria-label="visibility" onClick={() => setIsOpen(!isOpen)}>
+          <IconButton
+            aria-label="visibility"
+            onClick={() => {
+              setIsOpen(!isOpen);
+              setPerson(user);
+            }}
+          >
             {!user?.active ? (
               <NoEncryptionIcon color="error" fontSize="medium" />
             ) : (
@@ -176,8 +182,16 @@ function UsersList() {
     </MDBox>
   );
 
-  const confirmLock = () => {
+  const confirmLock = async () => {
     setIsLoading(!isLoading);
+    const req = await lockAndUnclockAccount(person?.id, token);
+    if (req?.success) {
+      await getUsers();
+      setIsLoading(false);
+      setIsOpen(false);
+    } else {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -249,8 +263,12 @@ function UsersList() {
       </MDBox>
       <UserModal open={open} setOpen={setOpen} setErr={setErr} setSuccess={setSuccess} />
       <MDLockModal
-        title="Désactivation du compte"
-        message="En désactivant le compte de l'utilisateur, il ne pourra plus accéder au service de Askoacademy pendant un certain temps."
+        title={person?.active ? "Désactivation du compte" : "Activation du compte"}
+        message={
+          person?.active
+            ? "En désactivant le compte de l'utilisateur, il ne pourra plus accéder au service de Askoacademy pendant un certain temps."
+            : "La réactivation de ce compte lui permettra de bénéficier à nouveau des services de Askoacademy."
+        }
         confirmLock={confirmLock}
         isOpen={isOpen}
         isLoading={isLoading}

@@ -161,3 +161,19 @@ export const updateLevel = (title, id, token) =>
       .then((e) => resolve(e))
       .catch((err) => reject(err));
   });
+
+/*
+Deactivate/activate account
+*/
+export const lockAndUnclockAccount = (userId, token) =>
+  new Promise((resolve, reject) => {
+    const params = {
+      method: "POST",
+      headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+      redirect: "follow",
+    };
+    fetch(`${API_URL}/users/${userId}/active`, params)
+      .then((response) => response.json())
+      .then((e) => resolve(e))
+      .catch((err) => reject(err));
+  });
