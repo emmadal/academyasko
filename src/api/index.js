@@ -211,3 +211,84 @@ export const getExercicesByAuthor = (authorId, token) =>
       .then((e) => resolve(e))
       .catch((err) => reject(err));
   });
+
+/*
+Create an attribution
+*/
+export const createAttribution = (data, token) =>
+  new Promise((resolve, reject) => {
+    const params = {
+      method: "POST",
+      headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+      redirect: "follow",
+      body: JSON.stringify({ ...data }),
+    };
+    fetch(`${API_URL}/students/attributeTeacher`, params)
+      .then((response) => response.json())
+      .then((e) => resolve(e))
+      .catch((err) => reject(err));
+  });
+
+/*
+Get list of attribution
+*/
+export const getAllAttributions = (token) =>
+  new Promise((resolve, reject) => {
+    const params = {
+      method: "GET",
+      headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+      redirect: "follow",
+    };
+    fetch(`${API_URL}/attributions`, params)
+      .then((response) => response.json())
+      .then((e) => resolve(e))
+      .catch((err) => reject(err));
+  });
+
+/*
+Get list of attribution
+*/
+export const deleteAttribution = (id, token) =>
+  new Promise((resolve, reject) => {
+    const params = {
+      method: "DELETE",
+      headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+      redirect: "follow",
+    };
+    fetch(`${API_URL}/attributions/${id}`, params)
+      .then((response) => response.json())
+      .then((e) => resolve(e))
+      .catch((err) => reject(err));
+  });
+
+/*
+Get list of coachs and teachers
+*/
+export const getTeachersAndCoachs = (token) =>
+  new Promise((resolve, reject) => {
+    const params = {
+      method: "GET",
+      headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+      redirect: "follow",
+    };
+    fetch(`${API_URL}/teachers`, params)
+      .then((response) => response.json())
+      .then((e) => resolve(e))
+      .catch((err) => reject(err));
+  });
+
+/*
+Get list of all students
+*/
+export const getStudentList = (token) =>
+  new Promise((resolve, reject) => {
+    const params = {
+      method: "GET",
+      headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+      redirect: "follow",
+    };
+    fetch(`${API_URL}/students`, params)
+      .then((response) => response.json())
+      .then((e) => resolve(e))
+      .catch((err) => reject(err));
+  });

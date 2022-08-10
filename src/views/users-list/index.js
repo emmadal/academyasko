@@ -54,7 +54,7 @@ function UsersList() {
   const getUsers = async () => {
     const res = await getAllUsers(token);
     if (res.success) {
-      setUsers([...res.data]);
+      setUsers([...res.data.reverse()]);
     }
   };
 
@@ -261,7 +261,13 @@ function UsersList() {
           </Grid>
         </Grid>
       </MDBox>
-      <UserModal open={open} setOpen={setOpen} setErr={setErr} setSuccess={setSuccess} />
+      <UserModal
+        open={open}
+        setOpen={setOpen}
+        setErr={setErr}
+        setSuccess={setSuccess}
+        getUsers={getUsers}
+      />
       <MDLockModal
         title={person?.active ? "Désactivation du compte" : "Activation du compte"}
         message={

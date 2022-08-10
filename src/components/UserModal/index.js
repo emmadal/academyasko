@@ -29,7 +29,7 @@ import * as Yup from "yup";
 // API call
 import { registerUser } from "api";
 
-function UserModal({ open, setOpen, setErr, setSuccess }) {
+function UserModal({ open, setOpen, setErr, setSuccess, getUsers }) {
   const status = [
     { id: 7, value: "admin", label: "Administrateur" },
     { id: 1, value: "coach", label: "Coach" },
@@ -68,6 +68,7 @@ function UserModal({ open, setOpen, setErr, setSuccess }) {
         setIsLoading(false);
         validation.resetForm();
         setSuccess("Nouvel utilisateur ajouté");
+        await getUsers();
         setOpen(false);
       } else {
         setErr("Un problème est survenue. Veuillez ressayer");
@@ -236,5 +237,6 @@ UserModal.propTypes = {
   setOpen: PropTypes.func.isRequired,
   setErr: PropTypes.func.isRequired,
   setSuccess: PropTypes.func.isRequired,
+  getUsers: PropTypes.func.isRequired,
 };
 export default UserModal;
