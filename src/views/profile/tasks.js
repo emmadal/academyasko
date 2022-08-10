@@ -40,6 +40,33 @@ function Tasks() {
 
   useEffect(() => getExercices(), []);
 
+  if (userProfile?.user_type !== ("admin" || "coach" || "teacher")) {
+    return (
+      <MDBox pt={2} px={2} lineHeight={1.25}>
+        <MDBox mb={1} mt={2}>
+          <MDTypography variant="body2" color="dark" fontWeight="bold">
+            Listes de mes tâches.
+          </MDTypography>
+        </MDBox>
+        <MDBox p={2}>
+          <Grid container spacing={3}>
+            {exercices.map((exercice) => (
+              <Grid item xs={12} md={4} xl={4} key={exercice?.uuid}>
+                <TaskCard
+                  title={exercice?.title}
+                  date_begin={exercice?.date_begin}
+                  date_end={exercice?.date_end}
+                  description={exercice?.description}
+                  authors={[{ image: userProfile?.avatar ?? "", name: userProfile?.name }]}
+                />
+              </Grid>
+            ))}
+          </Grid>
+        </MDBox>
+      </MDBox>
+    );
+  }
+
   return (
     <>
       <MDBox pt={2} px={2} lineHeight={1.25}>

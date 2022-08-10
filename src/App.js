@@ -89,14 +89,20 @@ export default function App() {
       return null;
     });
 
-  const routes =
-    userProfile?.user_type === "admin"
-      ? indexRoutes
-      : userProfile?.user_type === "teacher" || "coach"
-      ? teacherAndCoachRoutes
-      : userProfile?.user_type === "student"
-      ? studentRoutes
-      : [];
+  const routes = () => {
+    switch (userProfile?.user_type) {
+      case "admin":
+        return indexRoutes;
+      case "teacher":
+        return teacherAndCoachRoutes;
+      case "coach":
+        return teacherAndCoachRoutes;
+      default:
+        return studentRoutes;
+    }
+  };
+
+  const globalRoutes = routes();
 
   return (
     <ThemeProvider theme={darkMode ? themeDark : theme}>
@@ -106,13 +112,13 @@ export default function App() {
           color={sidenavColor}
           brand={(transparentSidenav && !darkMode) || whiteSidenav ? brandDark : brandWhite}
           brandName="Askoacademy"
-          routes={routes}
+          routes={globalRoutes}
           onMouseEnter={handleOnMouseEnter}
           onMouseLeave={handleOnMouseLeave}
         />
       )}
       <Routes>
-        {getRoutes(routes)}
+        {getRoutes(globalRoutes)}
         <Route path="*" element={<Navigate to="/dashboard" />} />
       </Routes>
     </ThemeProvider>
