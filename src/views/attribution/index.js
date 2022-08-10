@@ -1,4 +1,4 @@
-/* eslint-disable no-unused-vars */
+/* eslint-disable no-nested-ternary */
 /* eslint-disable no-unsafe-optional-chaining */
 import { useState, useEffect } from "react";
 
@@ -6,6 +6,7 @@ import { useState, useEffect } from "react";
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
 import MDButton from "components/MDButton";
+import MDBadge from "components/MDBadge";
 import MDAlert from "components/MDAlert";
 import MDDeleteModal from "components/MDDeleteModal";
 
@@ -44,7 +45,7 @@ function Attribution() {
   const [isLoading, setIsLoading] = useState(false);
   const [isLoadingDel, setIsLoadingDel] = useState(false);
   const [err, setErr] = useState("");
-  const [idAttr, setIdAttr] = useState();
+  const [attr, setAttr] = useState();
   const [open, setOpen] = useState(false);
   const [success, setSuccess] = useState("");
   const [trainerList, setTrainerList] = useState([]);
@@ -94,14 +95,17 @@ function Attribution() {
     validateOnChange: true,
   });
 
-  const onDelete = (id) => {
+  const onDelete = (obj) => {
     setOpen(!open);
-    setIdAttr(id);
+    setAttr(obj);
   };
 
   const confirmDelete = async () => {
     setIsLoadingDel(!isLoadingDel);
-    const req = await deleteAttribution(idAttr, token);
+    const req = await deleteAttribution(
+      { student_id: attr?.student_id, teacher_id: attr?.teacher_id },
+      token
+    );
     if (req.success) {
       await getAttribution();
       setSuccess("L'attribution a été supprimée avec succès");
@@ -129,11 +133,12 @@ function Attribution() {
           {attribution?.teacher?.user_mobile_1}
         </MDTypography>
       ),
-      teacher_user_type: (
-        <MDTypography variant="text" color="dark" fontWeight="medium">
-          {attribution?.teacher?.user_type === "teacher" ? "Professeur" : "Coach"}
-        </MDTypography>
-      ),
+      teacher_user_type:
+        attribution.teacher?.user_type === "teacher" ? (
+          <MDBadge badgeContent="Enseignant" size="xs" container color="info" />
+        ) : attribution.teacher?.user_type === "coach" ? (
+          <MDBadge badgeContent="Enseignant" size="xs" container color="info" />
+        ) : null,
       student_name: (
         <MDTypography variant="text" color="dark" fontWeight="medium">
           {attribution?.student?.name}
@@ -146,20 +151,24 @@ function Attribution() {
       ),
       student_level: (
         <MDTypography variant="text" color="dark" fontWeight="medium">
-          {attribution?.student?.user_type}
+          {attribution?.student?.user_type === "student"
+            ? "Etudiant"
+            : attribution?.student?.user_type === "schoolboy"
+            ? "Écolier"
+            : attribution?.student?.user_type === "college_student"
+            ? "Collégien"
+            : attribution?.student?.user_type === "high_school_student"
+            ? "Lycéen"
+            : null}
         </MDTypography>
       ),
       action: (
-        <IconButton aria-label="delete">
-          <DeleteIcon color="error" onClick={() => onDelete(attribution?.id)} />
+        <IconButton aria-label="delete" onClick={() => onDelete(attribution)}>
+          <DeleteIcon color="error" />
         </IconButton>
       ),
     })),
   });
-
-  if (success || err) {
-    validation.resetForm();
-  }
 
   return (
     <DashboardLayout>

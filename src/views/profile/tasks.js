@@ -40,7 +40,7 @@ function Tasks() {
 
   useEffect(() => getExercices(), []);
 
-  if (userProfile?.user_type !== ("admin" || "coach" || "teacher")) {
+  if (userProfile?.user_type !== "teacher" && userProfile?.user_type !== "coach") {
     return (
       <MDBox pt={2} px={2} lineHeight={1.25}>
         <MDBox mb={1} mt={2}>

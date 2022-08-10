@@ -246,16 +246,16 @@ export const getAllAttributions = (token) =>
   });
 
 /*
-Get list of attribution
+Delete attribution
 */
-export const deleteAttribution = (id, token) =>
+export const deleteAttribution = ({ student_id: studentId, teacher_id: teacherId }, token) =>
   new Promise((resolve, reject) => {
     const params = {
       method: "DELETE",
       headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
       redirect: "follow",
     };
-    fetch(`${API_URL}/attributions/${id}`, params)
+    fetch(`${API_URL}/attributions/student/${studentId}/teacher/${teacherId}/delete`, params)
       .then((response) => response.json())
       .then((e) => resolve(e))
       .catch((err) => reject(err));
@@ -288,6 +288,38 @@ export const getStudentList = (token) =>
       redirect: "follow",
     };
     fetch(`${API_URL}/students`, params)
+      .then((response) => response.json())
+      .then((e) => resolve(e))
+      .catch((err) => reject(err));
+  });
+
+/*
+Get my students
+*/
+export const getMyStudentList = (userId, token) =>
+  new Promise((resolve, reject) => {
+    const params = {
+      method: "GET",
+      headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+      redirect: "follow",
+    };
+    fetch(`${API_URL}/teachers/${userId}/students`, params)
+      .then((response) => response.json())
+      .then((e) => resolve(e))
+      .catch((err) => reject(err));
+  });
+
+/*
+Get my trainers
+*/
+export const getMyTrainersList = (userId, token) =>
+  new Promise((resolve, reject) => {
+    const params = {
+      method: "GET",
+      headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+      redirect: "follow",
+    };
+    fetch(`${API_URL}/students/${userId}/teachers`, params)
       .then((response) => response.json())
       .then((e) => resolve(e))
       .catch((err) => reject(err));

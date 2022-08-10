@@ -1,30 +1,49 @@
-/* eslint-disable no-unused-vars */
+/* eslint-disable react/function-component-definition */
+
 import { useState, useEffect } from "react";
 
 // Material Dashboard 2 React components
-import MDBox from "components/MDBox";
-import MDTypography from "components/MDTypography";
-import MDButton from "components/MDButton";
-import MDInput from "components/MDInput";
+import CardUser from "components/CardUser";
 
 // Material Dashboard 2 React example components
 import DashboardLayout from "molecules/DashboardLayout";
 import DashboardNavbar from "molecules/DashboardNavbar";
 
 // @mui material components
-import CircularProgress from "@mui/material/CircularProgress";
-import Grid from "@mui/material/Grid";
+import Stack from "@mui/material/Stack";
+
+import { getCookie, getTeachersAndCoachs } from "api";
 
 function Trainers() {
-  const [isLoading, setIsLoading] = useState(false);
+  const [users, setUsers] = useState([]);
+  const token = getCookie("askoacademy-token");
+
+  const getPerson = async () => {
+    const res = await getTeachersAndCoachs(token);
+    if (res.success) {
+      setUsers([...res.data]);
+    }
+  };
+
+  useEffect(() => {
+    // Fetch details onces
+    getPerson();
+    return () => null;
+  }, []);
 
   return (
     <DashboardLayout>
       <DashboardNavbar />
-      <Grid container spacing={1}>
-        <Grid item xs={12} md={6} xl={6} />
-        <Grid item xs={12} md={6} xl={6} />
-      </Grid>
+      <Stack direction="row" spacing={3}>
+        {users.map((user) => (
+          <CardUser
+            key={user?.id}
+            name={user?.name}
+            description={user?.description}
+            type={user?.user_type}
+          />
+        ))}
+      </Stack>
     </DashboardLayout>
   );
 }

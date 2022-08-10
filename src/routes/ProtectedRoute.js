@@ -11,11 +11,11 @@ function ProtectedRoute({ children }) {
 
   const getCookieByName = (tokenName) => {
     let token;
-    if (document.cookie) {
+    if (document?.cookie) {
       token = document?.cookie
-        .split(";")
-        .find((row) => row.startsWith(`${tokenName}=`))
-        .split("=")[1];
+        ?.split(";")
+        ?.find((row) => row.startsWith(`${tokenName}=`))
+        ?.split("=")[1];
     }
     return token;
   };

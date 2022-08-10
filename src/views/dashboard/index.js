@@ -1,12 +1,13 @@
 /* eslint-disable no-constant-condition */
 /* eslint-disable react/function-component-definition */
-import { useEffect, useCallback } from "react";
+import { useEffect, useCallback, useState } from "react";
 
 // @mui material components
 import Grid from "@mui/material/Grid";
 
 // Material Dashboard 2 React components
 import MDBox from "components/MDBox";
+import CardUser from "components/CardUser";
 
 // Material Dashboard 2 React example components
 import DashboardLayout from "molecules/DashboardLayout";
@@ -28,21 +29,42 @@ import OrdersOverview from "layouts/dashboard/components/OrdersOverview";
 import { setFetchDetails, useMaterialUIController } from "context";
 
 // api call
-import { getUserById, getCookie } from "api";
+import { getUserById, getCookie, getMyStudentList, getMyTrainersList } from "api";
 
 function Dashboard() {
   const { sales, tasks } = reportsLineChartData;
+  const [users, setUsers] = useState([]);
   const [controller, dispatch] = useMaterialUIController();
+  const token = getCookie("askoacademy-token");
   const { userProfile } = controller;
 
   const getUserDetails = useCallback(async () => {
-    const token = await getCookie("askoacademy-token");
-    const res = await getUserById(controller?.userProfile?.id, token);
+    const res = await getUserById(userProfile?.id, token);
     if (res?.success) {
       // Dispatch Login
       setFetchDetails(dispatch, res?.data);
     }
   }, [dispatch]);
+
+  const getPerson = async () => {
+    if (userProfile?.user_type === "teacher" || userProfile?.user_type === "coach") {
+      const res = await getMyStudentList(userProfile?.id, token);
+      if (res.success) {
+        setUsers([...res.data]);
+      }
+    }
+    if (
+      userProfile?.user_type === "student" ||
+      userProfile?.user_type === "college_student" ||
+      userProfile?.user_type === "schoolboy" ||
+      userProfile?.user_type === "high_school_student"
+    ) {
+      const res = await getMyTrainersList(userProfile?.id, token);
+      if (res.success) {
+        setUsers([...res.data]);
+      }
+    }
+  };
 
   useEffect(() => {
     // Fetch User details onces
@@ -50,10 +72,28 @@ function Dashboard() {
     return () => null;
   }, []);
 
+  useEffect(() => getPerson(), []);
+
+  const showUsers = () => {
+    switch (userProfile?.user_type) {
+      case "teacher" || "coach":
+        return (
+          <MDBox direction="row">
+            {users.map((user) => (
+              <CardUser key={user?.uuid} name={user?.name} description={user?.description} />
+            ))}
+          </MDBox>
+        );
+      default:
+        return null;
+    }
+  };
+
   return (
     <DashboardLayout>
       <DashboardNavbar />
       <MDBox py={3}>
+        {showUsers()}
         {userProfile?.user_type === "admin" && (
           <>
             <Grid container spacing={3}>
