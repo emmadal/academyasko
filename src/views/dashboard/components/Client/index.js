@@ -1,5 +1,7 @@
+/* eslint-disable no-nested-ternary */
+/* eslint-disable react/function-component-definition */
 /* eslint-disable no-unused-vars */
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 // @mui material components
 import Card from "@mui/material/Card";
@@ -14,32 +16,53 @@ import MDTypography from "components/MDTypography";
 // Material Dashboard 2 React examples
 import DataTable from "examples/Tables/DataTable";
 
+import { getCookie, getMyStudentList } from "api";
+
+// Material Dashboard 2 React contexts
+import { useMaterialUIController } from "context";
+
 function Client() {
-  const [menu, setMenu] = useState(null);
+  const [controller, dispatch] = useMaterialUIController();
+  const token = getCookie("askoacademy-token");
+  const { userProfile } = controller;
+  const [students, setStudents] = useState([]);
 
-  const openMenu = ({ currentTarget }) => setMenu(currentTarget);
-  const closeMenu = () => setMenu(null);
+  const getStudents = async () => {
+    if (userProfile?.user_type === "teacher" || userProfile?.user_type === "coach") {
+      const res = await getMyStudentList(userProfile?.id, token);
+      if (res.success) {
+        setStudents([...res.data]);
+      }
+    }
+  };
 
-  const renderMenu = (
-    <Menu
-      id="simple-menu"
-      anchorEl={menu}
-      anchorOrigin={{
-        vertical: "top",
-        horizontal: "left",
-      }}
-      transformOrigin={{
-        vertical: "top",
-        horizontal: "right",
-      }}
-      open={Boolean(menu)}
-      onClose={closeMenu}
-    >
-      <MenuItem onClick={closeMenu}>Action</MenuItem>
-      <MenuItem onClick={closeMenu}>Another action</MenuItem>
-      <MenuItem onClick={closeMenu}>Something else</MenuItem>
-    </Menu>
-  );
+  useEffect(() => {
+    getStudents();
+    return () => null;
+  }, []);
+
+  const showRow = () => ({
+    rows: students.flatMap((student) => ({
+      name: (
+        <MDTypography variant="text" color="dark" fontWeight="medium">
+          {student?.name}
+        </MDTypography>
+      ),
+      user_type: (
+        <MDTypography variant="text" color="dark">
+          {student?.user_type === "high_school_student"
+            ? "Lycéen"
+            : student?.user_type === "student"
+            ? "Etudiant"
+            : student?.user_type === "schoolboy"
+            ? "Ecolier"
+            : student?.user_type === "collge_student"
+            ? "Collégien"
+            : null}
+        </MDTypography>
+      ),
+    })),
+  });
 
   return (
     <Card>
@@ -55,9 +78,9 @@ function Client() {
           table={{
             columns: [
               { Header: "Nom", accessor: "name", align: "left" },
-              { Header: "Email", accessor: "email", align: "left" },
+              { Header: "Niveau", accessor: "user_type", align: "left" },
             ],
-            rows: [],
+            rows: [...showRow().rows],
           }}
           showTotalEntries={false}
           isSorted={false}

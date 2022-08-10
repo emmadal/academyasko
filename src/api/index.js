@@ -87,11 +87,11 @@ Get Cookie by name
 */
 export const getCookie = (cookieName) => {
   let name;
-  if (document.cookie) {
+  if (document?.cookie) {
     name = document?.cookie
-      .split(";")
-      .find((row) => row.startsWith(`${cookieName}=`))
-      .split("=")[1];
+      ?.split(";")
+      ?.find((row) => row?.startsWith(`${cookieName}=`))
+      ?.split("=")[1];
   }
   return name ?? "";
 };
