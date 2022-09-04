@@ -1,3 +1,4 @@
+/* eslint-disable no-plusplus */
 /* eslint-disable no-unused-vars */
 import React, { useState } from "react";
 
@@ -12,8 +13,11 @@ import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import CircularProgress from "@mui/material/CircularProgress";
 import InputLabel from "@mui/material/InputLabel";
+import IconButton from "@mui/material/IconButton";
+import KeyIcon from "@mui/icons-material/Key";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
+import InputAdornment from "@mui/material/InputAdornment";
 import Select from "@mui/material/Select";
 
 // Material Dashboard 2 React components
@@ -29,6 +33,8 @@ import * as Yup from "yup";
 // API call
 import { registerUser } from "api";
 
+import COUNTRY_LIST from "utils";
+
 function UserModal({ open, setOpen, setErr, setSuccess, getUsers }) {
   const status = [
     { id: 7, value: "admin", label: "Administrateur" },
@@ -39,6 +45,7 @@ function UserModal({ open, setOpen, setErr, setSuccess, getUsers }) {
     { id: 2, value: "teacher", label: "Professeur" },
     { id: 6, value: "high_school_student", label: "Lycéen" },
   ];
+  const [pwd, setPwd] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const validation = useFormik({
     // enableReinitialize : use this flag when initial values needs to be changed
@@ -46,13 +53,11 @@ function UserModal({ open, setOpen, setErr, setSuccess, getUsers }) {
     initialValues: {
       name: "",
       email: "",
-      password: "",
       user_mobile_1: "",
       user_type: "",
       country: "",
     },
     validationSchema: Yup.object({
-      password: Yup.string().min(6).required("Le mot de passe doit contenir 6 caractères"),
       user_type: Yup.string().required("Le Status est requis"),
       user_mobile_1: Yup.string().required("Veuillez entrer le contact"),
       email: Yup.string().required("Email requis"),
@@ -63,7 +68,7 @@ function UserModal({ open, setOpen, setErr, setSuccess, getUsers }) {
       setIsLoading(!isLoading);
       const date = new Date().getFullYear();
       const loginID = `asko-${values.name.split(" ")[0].toLocaleLowerCase()}${date}`;
-      const res = await registerUser({ ...values, login: loginID });
+      const res = await registerUser({ ...values, login: loginID, password: pwd });
       if (res?.success) {
         setIsLoading(false);
         validation.resetForm();
@@ -79,6 +84,17 @@ function UserModal({ open, setOpen, setErr, setSuccess, getUsers }) {
     validateOnChange: true,
   });
   const handleClose = () => setOpen(false);
+
+  const generatePassword = () => {
+    const chars = "0123456789abcdefghijklmnopqrstuvwxyz!@#$%^&*()ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    const passwordLength = 12;
+    let password = "";
+    for (let i = 0; i <= passwordLength; i++) {
+      const randomNumber = Math.floor(Math.random() * chars.length);
+      password += chars.substring(randomNumber, randomNumber + 1);
+    }
+    setPwd(password);
+  };
   return (
     <Dialog open={open} onClose={handleClose}>
       <MDBox component="form" role="form">
@@ -121,15 +137,25 @@ function UserModal({ open, setOpen, setErr, setSuccess, getUsers }) {
               />
             </MDBox>
             <MDBox mb={2}>
-              <MDInput
-                name="country"
-                value={validation.values.country}
-                error={!!(validation.touched.country && validation.errors.country)}
-                onChange={validation.handleChange}
-                type="text"
-                label="Pays"
-                fullWidth
-              />
+              <FormControl fullWidth>
+                <InputLabel id="demo-simple-select-label">Pays</InputLabel>
+                <Select
+                  name="country"
+                  labelId="demo-simple-select-label"
+                  id="demo-simple-select"
+                  error={!!(validation.touched.country && validation.errors.country)}
+                  value={validation.values.country}
+                  label="Pays"
+                  onChange={validation.handleChange}
+                  sx={{ padding: "0.75rem" }}
+                >
+                  {COUNTRY_LIST.map((country) => (
+                    <MenuItem key={country.code} value={country.name}>
+                      {country.name}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
               {validation.touched.country && validation.errors.country ? (
                 <MDTypography variant="caption" color="error">
                   {validation.errors.country}
@@ -196,19 +222,22 @@ function UserModal({ open, setOpen, setErr, setSuccess, getUsers }) {
             </MDBox>
             <MDBox mb={2}>
               <MDInput
-                name="password"
-                value={validation.values.password}
-                error={!!(validation.touched.password && validation.errors.password)}
+                value={pwd}
                 onChange={validation.handleChange}
-                type="password"
-                label="Mot de passe"
+                type="text"
+                label="Generez le mot de passe avec la clé"
                 fullWidth
+                InputProps={{
+                  className: "asko_input_placeholder",
+                  startAdornment: (
+                    <InputAdornment position="start" sx={{ padding: "0" }}>
+                      <IconButton onClick={() => generatePassword()}>
+                        <KeyIcon />
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                }}
               />
-              {validation.touched.password && validation.errors.password ? (
-                <MDTypography variant="caption" color="error">
-                  {validation.errors.password}
-                </MDTypography>
-              ) : null}
             </MDBox>
           </MDBox>
         </DialogContent>

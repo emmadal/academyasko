@@ -1,0 +1,9 @@
+.asko_input_placeholder div {
+  margin-right: 1px;
+}
+
+.asko_input_placeholder div p,
+.asko_input_placeholder input {
+  font-size: 1.2em;
+  padding-left: 0;
+}
