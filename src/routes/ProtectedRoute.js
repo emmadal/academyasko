@@ -5,26 +5,13 @@ import { useMaterialUIController } from "context";
 
 // react-router-dom components
 import { Navigate } from "react-router-dom";
+import { getCookie } from "api";
 
 function ProtectedRoute({ children }) {
   const [controller] = useMaterialUIController();
+  const token = getCookie("askoacademy-token");
 
-  const getCookieByName = (tokenName) => {
-    let token;
-    if (document?.cookie) {
-      token = document?.cookie
-        ?.split(";")
-        ?.find((row) => row.startsWith(`${tokenName}=`))
-        ?.split("=")[1];
-    }
-    return token;
-  };
-
-  if (
-    controller.isSignout ||
-    getCookieByName("askoacademy-token") === undefined ||
-    getCookieByName("askoacademy-token") === null
-  ) {
+  if (controller.isSignout || !token) {
     return <Navigate to="/signin" replace />;
   }
   return children;

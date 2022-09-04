@@ -86,14 +86,14 @@ export const getUserById = (userId, token) =>
 Get Cookie by name
 */
 export const getCookie = (cookieName) => {
-  let name;
-  if (document?.cookie) {
-    name = document?.cookie
-      ?.split(";")
-      ?.find((row) => row?.startsWith(`${cookieName}=`))
-      ?.split("=")[1];
+  const cookieArr = document.cookie.split(";");
+  for (let i = 0; i < cookieArr.length; i += 1) {
+    const cookiePair = cookieArr[i].split("=");
+    if (cookieName === cookiePair[0].trim()) {
+      return decodeURIComponent(cookiePair[1]);
+    }
   }
-  return name ?? "";
+  return null;
 };
 
 /*
