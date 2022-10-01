@@ -1,3 +1,4 @@
+/* eslint-disable no-unsafe-optional-chaining */
 /* eslint-disable no-constant-condition */
 import { useState, useEffect } from "react";
 
@@ -17,7 +18,7 @@ import TaskCard from "molecules/TaskCard";
 // Material Dashboard 2 React contexts
 import { useMaterialUIController } from "context";
 
-import ReactQuill from "react-quill";
+// import ReactQuill from "react-quill";
 
 import { getExercicesByAuthor, getCookie } from "api";
 
@@ -29,16 +30,17 @@ function Tasks() {
   const { userProfile } = controller;
   const [err, setErr] = useState("");
   const [success, setSuccess] = useState("");
-  const [value, setValue] = useState("");
+  // const [value, setValue] = useState("");
 
-  const getExercices = async () => {
-    const res = await getExercicesByAuthor(userProfile?.id, token);
-    if (res.success) {
-      setExercices([...res.data]);
-    }
-  };
-
-  useEffect(() => getExercices(), []);
+  useEffect(() => {
+    const getExercices = async () => {
+      const res = await getExercicesByAuthor(userProfile?.id, token);
+      if (res?.success) {
+        setExercices([...res?.data]);
+      }
+    };
+    getExercices();
+  }, []);
 
   if (userProfile?.user_type !== "teacher" && userProfile?.user_type !== "coach") {
     return (
@@ -104,7 +106,7 @@ function Tasks() {
           ))}
         </Grid>
       </MDBox>
-      {userProfile?.user_type === "teacher" ? (
+      {/* {userProfile?.user_type === "teacher" ? (
         <MDBox mb={1} mt={2}>
           <MDTypography variant="h3" color="dark" fontWeight="bold">
             Examens
@@ -151,7 +153,7 @@ function Tasks() {
             </MDButton>
           </MDBox>
         </MDBox>
-      ) : null}
+      ) : null} */}
       <TaskAlert
         open={open}
         setOpen={setOpen}

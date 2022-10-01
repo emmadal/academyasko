@@ -37,7 +37,7 @@ function TaskAlert({ open, setOpen, setErr, setSuccess, authorId }) {
 
   const getLevels = async () => {
     const res = await getAllLevels(token);
-    if (res.success) {
+    if (res?.success) {
       setLevels([...res.data]);
     }
   };

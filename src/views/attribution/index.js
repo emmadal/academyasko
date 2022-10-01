@@ -141,7 +141,7 @@ function Attribution() {
         ) : null,
       student_name: (
         <MDTypography variant="text" color="dark" fontWeight="medium">
-          {attribution?.student?.name}
+          {attribution?.student?.login}
         </MDTypography>
       ),
       student_contact: (
@@ -221,7 +221,7 @@ function Attribution() {
               >
                 {studentList.map((student) => (
                   <MenuItem key={student.id} value={student.id}>
-                    {student?.name}
+                    {student?.login}
                   </MenuItem>
                 ))}
               </Select>
@@ -246,7 +246,7 @@ function Attribution() {
               >
                 {trainerList.map((trainer) => (
                   <MenuItem key={trainer.id} value={trainer.id}>
-                    {trainer?.name} {" - "}{" "}
+                    {trainer?.login} {" - "}{" "}
                     {trainer?.user_type === "teacher" ? "Professeur" : "Coach"}
                   </MenuItem>
                 ))}

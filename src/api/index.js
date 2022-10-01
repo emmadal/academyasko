@@ -204,7 +204,6 @@ export const getExercicesByAuthor = (authorId, token) =>
       method: "GET",
       headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
       redirect: "follow",
-      // body: JSON.stringify({ author_id: authorId }),
     };
     fetch(`${API_URL}/teacher/${authorId}/exercices`, params)
       .then((response) => response.json())

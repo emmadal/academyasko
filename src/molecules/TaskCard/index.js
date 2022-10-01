@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable camelcase */
 import { useState } from "react";
 
@@ -84,7 +85,7 @@ function TaskCard({ title, description, authors, date_begin, date_end }) {
             lastItem
           />
         </MDBox>
-        <MDBox ml={2}>{renderAuthors}</MDBox>
+        {/* <MDBox ml={2}>{renderAuthors}</MDBox> */}
       </AccordionDetails>
     </Accordion>
   );
