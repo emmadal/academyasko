@@ -5,7 +5,6 @@ import ResetPassword from "views/reset-password";
 import Profile from "views/profile";
 import UsersList from "views/users-list";
 import BroadCast from "views/broadcast";
-import Message from "views/message";
 import Attribution from "views/attribution";
 import Report from "views/reports";
 import Trainers from "views/trainers";
@@ -89,18 +88,6 @@ export const indexRoutes = [
     component: (
       <ProtectedRoute>
         <Trainers />
-      </ProtectedRoute>
-    ),
-  },
-  {
-    type: "collapse",
-    name: "Messagerie",
-    key: "messagerie",
-    icon: <Icon fontSize="small">message</Icon>,
-    route: "/messagerie",
-    component: (
-      <ProtectedRoute>
-        <Message />
       </ProtectedRoute>
     ),
   },
