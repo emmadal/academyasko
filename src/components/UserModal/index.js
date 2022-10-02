@@ -15,6 +15,7 @@ import CircularProgress from "@mui/material/CircularProgress";
 import InputLabel from "@mui/material/InputLabel";
 import IconButton from "@mui/material/IconButton";
 import KeyIcon from "@mui/icons-material/Key";
+import PersonIcon from "@mui/icons-material/Person";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import InputAdornment from "@mui/material/InputAdornment";
@@ -45,7 +46,7 @@ function UserModal({ open, setOpen, setErr, setSuccess, getUsers }) {
     { id: 2, value: "teacher", label: "Professeur" },
     { id: 6, value: "high_school_student", label: "Lycéen" },
   ];
-  const [pwd, setPwd] = useState("");
+  const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const validation = useFormik({
     // enableReinitialize : use this flag when initial values needs to be changed
@@ -55,20 +56,22 @@ function UserModal({ open, setOpen, setErr, setSuccess, getUsers }) {
       email: "",
       user_mobile_1: "",
       user_type: "",
+      password: "",
+      login: "",
       country: "",
     },
     validationSchema: Yup.object({
       user_type: Yup.string().required("Le Status est requis"),
       user_mobile_1: Yup.string().required("Veuillez entrer le contact"),
-      email: Yup.string().required("Email requis"),
+      email: Yup.string().email("Veuille entrer un em-mail valide").required("Email requis"),
       name: Yup.string().required("Veuillez entrer le Nom"),
       country: Yup.string().required("Veuillez entrer le Pays"),
+      login: Yup.string().required("Le ID de connexion est requis"),
+      password: Yup.string().required("Le Mot de passe est requis"),
     }),
     onSubmit: async (values) => {
       setIsLoading(!isLoading);
-      const date = new Date().getFullYear();
-      const loginID = `asko-${values.name.split(" ")[0].toLocaleLowerCase()}${date}`;
-      const res = await registerUser({ ...values, login: loginID, password: pwd });
+      const res = await registerUser(values);
       if (res?.success) {
         setIsLoading(false);
         validation.resetForm();
@@ -85,16 +88,24 @@ function UserModal({ open, setOpen, setErr, setSuccess, getUsers }) {
   });
   const handleClose = () => setOpen(false);
 
-  const generatePassword = () => {
+  const generatePassword = async () => {
     const chars = "0123456789abcdefghijklmnopqrstuvwxyz!@#$%^&*()ABCDEFGHIJKLMNOPQRSTUVWXYZ";
     const passwordLength = 12;
-    let password = "";
+    let pwd = "";
     for (let i = 0; i <= passwordLength; i++) {
       const randomNumber = Math.floor(Math.random() * chars.length);
-      password += chars.substring(randomNumber, randomNumber + 1);
+      pwd += chars.substring(randomNumber, randomNumber + 1);
     }
-    setPwd(password);
+    await validation.setFieldValue("password", pwd);
   };
+
+  const generateLoginID = async (name) => {
+    window.console.log(name);
+    const date = new Date().getFullYear();
+    const login = `asko-${name.split(" ")[0].toLocaleLowerCase()}${date}`;
+    await validation.setFieldValue("login", login);
+  };
+
   return (
     <Dialog open={open} onClose={handleClose}>
       <MDBox component="form" role="form">
@@ -123,18 +134,29 @@ function UserModal({ open, setOpen, setErr, setSuccess, getUsers }) {
             </MDBox>
             <MDBox mb={2}>
               <MDInput
-                value={
-                  validation.values.name.length
-                    ? `asko-${validation.values.name
-                        .split(" ")[0]
-                        .toLocaleLowerCase()}${new Date().getFullYear()}`
-                    : ""
-                }
+                name="login"
+                error={!!(validation.touched.login && validation.errors.login)}
+                value={validation.values.login}
                 onChange={validation.handleChange}
                 type="text"
-                label="ID Connexion Askoacademy"
+                label="Generez le ID Connexion avec l'icône"
                 fullWidth
+                InputProps={{
+                  className: "asko_input_placeholder",
+                  startAdornment: (
+                    <InputAdornment position="start" sx={{ padding: "0" }}>
+                      <IconButton onClick={() => generateLoginID(validation.values.name)}>
+                        <PersonIcon />
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                }}
               />
+              {validation.touched.login && validation.errors.login ? (
+                <MDTypography variant="caption" color="error">
+                  {validation.errors.login}
+                </MDTypography>
+              ) : null}
             </MDBox>
             <MDBox mb={2}>
               <FormControl fullWidth>
@@ -222,7 +244,9 @@ function UserModal({ open, setOpen, setErr, setSuccess, getUsers }) {
             </MDBox>
             <MDBox mb={2}>
               <MDInput
-                value={pwd}
+                name="password"
+                value={validation.values.password}
+                error={!!(validation.touched.password && validation.errors.password)}
                 onChange={validation.handleChange}
                 type="text"
                 label="Generez le mot de passe avec la clé"
@@ -238,6 +262,11 @@ function UserModal({ open, setOpen, setErr, setSuccess, getUsers }) {
                   ),
                 }}
               />
+              {validation.touched.password && validation.errors.password ? (
+                <MDTypography variant="caption" color="error">
+                  {validation.errors.password}
+                </MDTypography>
+              ) : null}
             </MDBox>
           </MDBox>
         </DialogContent>
