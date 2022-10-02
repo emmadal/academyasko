@@ -34,7 +34,7 @@ function StatisticsCard({ color, title, count, icon }) {
           </Icon>
         </MDBox>
         <MDBox textAlign="right" lineHeight={1.25}>
-          <MDTypography variant="button" fontWeight="light" color="text">
+          <MDTypography variant="button" fontWeight="bold" color="dark">
             {title}
           </MDTypography>
           <MDTypography variant="h4">{count}</MDTypography>

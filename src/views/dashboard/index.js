@@ -1,6 +1,6 @@
 /* eslint-disable no-constant-condition */
 /* eslint-disable react/function-component-definition */
-import { useEffect, useCallback } from "react";
+import { useEffect, useCallback, useState } from "react";
 
 // @mui material components
 import Grid from "@mui/material/Grid";
@@ -11,13 +11,7 @@ import MDBox from "components/MDBox";
 // Material Dashboard 2 React example components
 import DashboardLayout from "molecules/DashboardLayout";
 import DashboardNavbar from "molecules/DashboardNavbar";
-import ReportsBarChart from "examples/Charts/BarCharts/ReportsBarChart";
-import ReportsLineChart from "examples/Charts/LineCharts/ReportsLineChart";
 import StatisticsCard from "views/dashboard/statistics-cards";
-
-// Data
-import reportsBarChartData from "layouts/dashboard/data/reportsBarChartData";
-import reportsLineChartData from "layouts/dashboard/data/reportsLineChartData";
 
 // Dashboard components
 import Projects from "views/dashboard/components/Projects";
@@ -28,11 +22,11 @@ import OrdersOverview from "layouts/dashboard/components/OrdersOverview";
 import { setFetchDetails, useMaterialUIController } from "context";
 
 // api call
-import { getUserById, getCookie } from "api";
+import { getUserById, getCookie, getAllUsers } from "api";
 
 function Dashboard() {
-  const { sales, tasks } = reportsLineChartData;
   const [controller, dispatch] = useMaterialUIController();
+  const [totalUser, setTotalUser] = useState(null);
   const token = getCookie("askoacademy-token");
   const { userProfile } = controller;
 
@@ -44,9 +38,31 @@ function Dashboard() {
     }
   }, [dispatch]);
 
+  const getUserList = useCallback(async () => {
+    const res = await getAllUsers(token);
+    if (res?.success) {
+      let total = 0;
+      let name = "";
+      // eslint-disable-next-line no-restricted-syntax
+      for (const i of res.data) {
+        name = i.user_type;
+        const type = res.data.filter((user) => user.user_type === i.user_type).length;
+        total = type;
+        // eslint-disable-next-line no-loop-func
+        setTotalUser((prev) => ({ ...prev, [name]: total }));
+      }
+    }
+  }, [dispatch]);
+
   useEffect(() => {
     // Fetch User details onces
     getUserDetails();
+    return () => null;
+  }, []);
+
+  useEffect(() => {
+    // Fetch User details onces
+    getUserList();
     return () => null;
   }, []);
 
@@ -55,76 +71,78 @@ function Dashboard() {
       <DashboardNavbar />
       <MDBox py={3}>
         {userProfile?.user_type === "admin" && (
-          <>
-            <Grid container spacing={3}>
-              <Grid item xs={12} md={3} lg={3}>
-                <MDBox mb={1.5}>
-                  <StatisticsCard color="dark" icon="grade" title="Administrateurs" count={0} />
-                </MDBox>
-              </Grid>
-              <Grid item xs={12} md={3} lg={3}>
-                <MDBox mb={1.5}>
-                  <StatisticsCard icon="sports" title="Coach" count={0} />
-                </MDBox>
-              </Grid>
-              <Grid item xs={12} md={3} lg={3}>
-                <MDBox mb={1.5}>
-                  <StatisticsCard
-                    color="success"
-                    icon="accessibility"
-                    title="Professeurs"
-                    count={0}
-                  />
-                </MDBox>
-              </Grid>
-              <Grid item xs={12} md={3} lg={3}>
-                <MDBox mb={1.5}>
-                  <StatisticsCard color="primary" icon="person_add" title="Autres" count={0} />
-                </MDBox>
-              </Grid>
+          <Grid container spacing={3}>
+            <Grid item xs={12} md={3} lg={3}>
+              <MDBox mb={1.5}>
+                <StatisticsCard
+                  color="dark"
+                  icon="military_tech"
+                  title="Administrateurs"
+                  count={totalUser?.admin ?? 0}
+                />
+              </MDBox>
             </Grid>
-            <MDBox mt={4.5}>
-              <Grid container spacing={3}>
-                <Grid item xs={12} md={6} lg={4}>
-                  <MDBox mb={3}>
-                    <ReportsBarChart
-                      color="info"
-                      title="website views"
-                      description="Last Campaign Performance"
-                      date="campaign sent 2 days ago"
-                      chart={reportsBarChartData}
-                    />
-                  </MDBox>
-                </Grid>
-                <Grid item xs={12} md={6} lg={4}>
-                  <MDBox mb={3}>
-                    <ReportsLineChart
-                      color="success"
-                      title="daily sales"
-                      description={
-                        <>
-                          (<strong>+15%</strong>) increase in today sales.
-                        </>
-                      }
-                      date="updated 4 min ago"
-                      chart={sales}
-                    />
-                  </MDBox>
-                </Grid>
-                <Grid item xs={12} md={6} lg={4}>
-                  <MDBox mb={3}>
-                    <ReportsLineChart
-                      color="dark"
-                      title="completed tasks"
-                      description="Last Campaign Performance"
-                      date="just updated"
-                      chart={tasks}
-                    />
-                  </MDBox>
-                </Grid>
-              </Grid>
-            </MDBox>
-          </>
+            <Grid item xs={12} md={3} lg={3}>
+              <MDBox mb={1.5}>
+                <StatisticsCard
+                  color="success"
+                  icon="accessibility"
+                  title="Coach"
+                  count={totalUser?.coach ?? 0}
+                />
+              </MDBox>
+            </Grid>
+            <Grid item xs={12} md={3} lg={3}>
+              <MDBox mb={1.5}>
+                <StatisticsCard
+                  color="info"
+                  icon="accessibility"
+                  title="Professeurs"
+                  count={totalUser?.teacher ?? 0}
+                />
+              </MDBox>
+            </Grid>
+            <Grid item xs={12} md={3} lg={3}>
+              <MDBox mb={1.5}>
+                <StatisticsCard
+                  color="error"
+                  icon="school"
+                  title="Etudiants"
+                  count={totalUser?.student ?? 0}
+                />
+              </MDBox>
+            </Grid>
+            <Grid item xs={12} md={3} lg={3}>
+              <MDBox mb={1.5}>
+                <StatisticsCard
+                  color="secondary"
+                  icon="boy"
+                  title="Lycéen"
+                  count={totalUser?.high_school_student ?? 0}
+                />
+              </MDBox>
+            </Grid>
+            <Grid item xs={12} md={3} lg={3}>
+              <MDBox mb={1.5}>
+                <StatisticsCard
+                  color="primary"
+                  icon="escalator_warning"
+                  title="Ecolier"
+                  count={totalUser?.schoolboy ?? 0}
+                />
+              </MDBox>
+            </Grid>
+            <Grid item xs={12} md={3} lg={3}>
+              <MDBox mb={1.5}>
+                <StatisticsCard
+                  color="warning"
+                  icon="person_add"
+                  title="Collégien"
+                  count={totalUser?.college_student ?? 0}
+                />
+              </MDBox>
+            </Grid>
+          </Grid>
         )}
         {userProfile?.user_type !== "admin" ? (
           <MDBox>

@@ -63,19 +63,19 @@ function UsersList() {
   const showStatus = (key) => {
     switch (key) {
       case "admin":
-        return <MDBadge badgeContent="Administrateur" size="xs" container color="error" />;
+        return <MDBadge badgeContent="Administrateur" size="xs" container color="dark" />;
       case "teacher":
-        return <MDBadge badgeContent="Enseignant" size="xs" container color="info" />;
+        return <MDBadge badgeContent="Professeur" size="xs" container color="info" />;
       case "coach":
-        return <MDBadge badgeContent="Coach" size="xs" container color="warning" />;
+        return <MDBadge badgeContent="Coach" size="xs" container color="success" />;
       case "student":
-        return <MDBadge badgeContent="Etudiant" size="xs" container color="dark" />;
+        return <MDBadge badgeContent="Etudiant" size="xs" container color="error" />;
       case "schoolboy":
-        return <MDBadge badgeContent="Ecolier" size="xs" container color="dark" />;
+        return <MDBadge badgeContent="Ecolier" size="xs" container color="primary" />;
       case "college_student":
-        return <MDBadge badgeContent="Collégien" size="xs" container color="dark" />;
+        return <MDBadge badgeContent="Collégien" size="xs" container color="warning" />;
       case "high_school_student":
-        return <MDBadge badgeContent="Lycéen" size="xs" container color="dark" />;
+        return <MDBadge badgeContent="Lycéen" size="xs" container color="secondary" />;
       default:
         return null;
     }
