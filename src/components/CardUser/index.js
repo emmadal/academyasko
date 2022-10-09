@@ -13,21 +13,27 @@ import MDButton from "components/MDButton";
 
 import pxToRem from "assets/theme-dark/functions/pxToRem";
 
+// Material Dashboard 2 React contexts
+import { useMaterialUIController } from "context";
+
 import Avatar from "react-avatar";
 
 function CardUser({ name, description, type }) {
+  const [controller] = useMaterialUIController();
+  const { userProfile } = controller;
+
   return (
     <Card>
-      <MDBox display="flex" justifyContent="space-between" pt={1} px={2} height="5rem">
+      <MDBox display="flex" justifyContent="space-between" pt={1} px={2} height="7rem">
         <MDBox
           variant="gradient"
           borderRadius="xl"
           display="flex"
           justifyContent="center"
           alignItems="center"
-          width="4rem"
-          height="4rem"
-          mt={-3}
+          width="10rem"
+          height="2rem"
+          mt={-1}
         >
           <Avatar name={name} round size={pxToRem(74)} />
         </MDBox>
@@ -38,10 +44,12 @@ function CardUser({ name, description, type }) {
           </MDTypography>
         </MDBox>
       </MDBox>
-      <MDBox textAlign="center" mb={2}>
-        <MDTypography variant="body2">{description ?? "Aucune Biographie disponible"}</MDTypography>
+      <MDBox mb={2}>
+        <MDTypography variant="body2" ml={3}>
+          {description ?? "Aucune Biographie disponible"}
+        </MDTypography>
       </MDBox>
-      <MDButton color="info">Contactez</MDButton>
+      {userProfile?.user_type === "admin" && <MDButton color="info">Contactez</MDButton>}
     </Card>
   );
 }
