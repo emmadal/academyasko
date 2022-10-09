@@ -7,6 +7,7 @@ import Grid from "@mui/material/Grid";
 
 // Material Dashboard 2 React components
 import MDBox from "components/MDBox";
+import MDResult from "components/MDResult";
 
 // Material Dashboard 2 React example components
 import DashboardLayout from "molecules/DashboardLayout";
@@ -16,7 +17,6 @@ import StatisticsCard from "views/dashboard/statistics-cards";
 // Dashboard components
 import Projects from "views/dashboard/components/Projects";
 import Client from "views/dashboard/components/Client";
-import OrdersOverview from "layouts/dashboard/components/OrdersOverview";
 
 // Material Dashboard 2 React contexts
 import { setFetchDetails, useMaterialUIController } from "context";
@@ -53,6 +53,30 @@ function Dashboard() {
       }
     }
   }, [dispatch]);
+
+  const renderByType = (type) => {
+    switch (type) {
+      case "teacher":
+      case "coach":
+        return <Client />;
+      case "schoolboy":
+      case "student":
+      case "college_student":
+      case "high_school_student":
+        return (
+          <Grid container spacing={3}>
+            <Grid item xs={12} md={6} lg={8}>
+              <Projects />
+            </Grid>
+            <Grid item xs={12} md={6} lg={4}>
+              <MDResult />
+            </Grid>
+          </Grid>
+        );
+      default:
+        return null;
+    }
+  };
 
   useEffect(() => {
     // Fetch User details onces
@@ -144,18 +168,15 @@ function Dashboard() {
             </Grid>
           </Grid>
         )}
-        {userProfile?.user_type !== "admin" ? (
+        {userProfile?.user_type !== "admin" && (
           <MDBox>
             <Grid container spacing={3}>
-              <Grid item xs={12} md={6} lg={8}>
-                {userProfile?.user_type === "teacher" || "coach" ? <Client /> : <Projects />}
-              </Grid>
-              <Grid item xs={12} md={6} lg={4}>
-                <OrdersOverview />
+              <Grid item xs={12} md={12} lg={12}>
+                {renderByType(userProfile?.user_type)}
               </Grid>
             </Grid>
           </MDBox>
-        ) : null}
+        )}
       </MDBox>
     </DashboardLayout>
   );
