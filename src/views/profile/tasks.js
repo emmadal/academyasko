@@ -1,6 +1,6 @@
 /* eslint-disable no-unsafe-optional-chaining */
 /* eslint-disable no-constant-condition */
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 
 // Material Dashboard 2 React components
 import MDBox from "components/MDBox";
@@ -18,8 +18,6 @@ import TaskCard from "molecules/TaskCard";
 // Material Dashboard 2 React contexts
 import { useMaterialUIController } from "context";
 
-// import ReactQuill from "react-quill";
-
 import { getExercicesByAuthor, getCookie } from "api";
 
 function Tasks() {
@@ -30,15 +28,15 @@ function Tasks() {
   const { userProfile } = controller;
   const [err, setErr] = useState("");
   const [success, setSuccess] = useState("");
-  // const [value, setValue] = useState("");
+
+  const getExercices = useCallback(async () => {
+    const res = await getExercicesByAuthor(userProfile?.id, token);
+    if (res?.success) {
+      setExercices([...res?.data]);
+    }
+  }, [userProfile?.id, token]);
 
   useEffect(() => {
-    const getExercices = async () => {
-      const res = await getExercicesByAuthor(userProfile?.id, token);
-      if (res?.success) {
-        setExercices([...res?.data]);
-      }
-    };
     getExercices();
   }, []);
 
@@ -46,23 +44,37 @@ function Tasks() {
     return (
       <MDBox pt={2} px={2} lineHeight={1.25}>
         <MDBox mb={1} mt={2}>
-          <MDTypography variant="body2" color="dark" fontWeight="bold">
+          <MDTypography variant="body1" color="dark" fontWeight="bold">
             Listes de mes tâches.
           </MDTypography>
         </MDBox>
         <MDBox p={2}>
           <Grid container spacing={3}>
-            {exercices.map((exercice) => (
-              <Grid item xs={12} md={4} xl={4} key={exercice?.uuid}>
-                <TaskCard
-                  title={exercice?.title}
-                  date_begin={exercice?.date_begin}
-                  date_end={exercice?.date_end}
-                  description={exercice?.description}
-                  authors={[{ image: userProfile?.avatar ?? "", name: userProfile?.name }]}
-                />
-              </Grid>
-            ))}
+            {!exercices.length ? (
+              <MDBox item mb={1} mt={5}>
+                <MDTypography
+                  variant="body2"
+                  color="dark"
+                  fontWeight="bold"
+                  textAlign="center"
+                  ml={1}
+                >
+                  Vous n&#39;avez aucune tache disponible
+                </MDTypography>
+              </MDBox>
+            ) : (
+              exercices.map((exercice) => (
+                <Grid item xs={12} md={4} xl={4} key={exercice?.uuid}>
+                  <TaskCard
+                    title={exercice?.title}
+                    date_begin={exercice?.date_begin}
+                    date_end={exercice?.date_end}
+                    description={exercice?.description}
+                    authors={[{ image: userProfile?.avatar ?? "", name: userProfile?.name }]}
+                  />
+                </Grid>
+              ))
+            )}
           </Grid>
         </MDBox>
       </MDBox>
@@ -86,74 +98,34 @@ function Tasks() {
           Ajouter un exercice
         </MDButton>
         <MDBox mb={1} mt={2}>
-          <MDTypography variant="body2" color="dark" fontWeight="bold">
+          <MDTypography variant="body1" color="dark" fontWeight="bold">
             Vous trouverez ci-dessous, la liste de vos exercies.
           </MDTypography>
         </MDBox>
       </MDBox>
       <MDBox p={2}>
         <Grid container spacing={3}>
-          {exercices.map((exercice) => (
-            <Grid item xs={12} md={4} xl={4} key={exercice?.uuid}>
-              <TaskCard
-                title={exercice?.title}
-                date_begin={exercice?.date_begin}
-                date_end={exercice?.date_end}
-                description={exercice?.description}
-                authors={[{ image: userProfile?.avatar ?? "", name: userProfile?.name }]}
-              />
-            </Grid>
-          ))}
+          {!exercices.length ? (
+            <MDBox mb={1} mt={5}>
+              <MDTypography variant="body2" color="dark" fontWeight="bold" ml={3}>
+                Vous n&#39;avez crée aucune tâche.
+              </MDTypography>
+            </MDBox>
+          ) : (
+            exercices.map((exercice) => (
+              <Grid item xs={12} md={4} xl={4} key={exercice?.uuid}>
+                <TaskCard
+                  title={exercice?.title}
+                  date_begin={exercice?.date_begin}
+                  date_end={exercice?.date_end}
+                  description={exercice?.description}
+                  authors={[{ image: userProfile?.avatar ?? "", name: userProfile?.name }]}
+                />
+              </Grid>
+            ))
+          )}
         </Grid>
       </MDBox>
-      {/* {userProfile?.user_type === "teacher" ? (
-        <MDBox mb={1} mt={2}>
-          <MDTypography variant="h3" color="dark" fontWeight="bold">
-            Examens
-          </MDTypography>
-          <MDTypography variant="body2" color="dark">
-            Rédigez vos sujets d&#39;examen ci-dessous.
-          </MDTypography>
-          <MDBox mt={2}>
-            <ReactQuill
-              theme="snow"
-              value={value}
-              onChange={setValue}
-              modules={{
-                toolbar: [
-                  [{ header: [1, 2, 3, 4, 5, 6, false] }],
-                  ["bold", "italic", "underline", "strike", "blockquote"],
-                  [{ list: "ordered" }, { list: "bullet" }, { indent: "-1" }, { indent: "+1" }],
-                  ["link", "image"],
-                  ["clean"],
-                  ["print"],
-                ],
-              }}
-              formats={[
-                "header",
-                "bold",
-                "italic",
-                "underline",
-                "strike",
-                "blockquote",
-                "list",
-                "bullet",
-                "indent",
-                "link",
-                "image",
-              ]}
-            />
-            <MDButton
-              variant="gradient"
-              color="info"
-              sx={{ marginTop: 5 }}
-              onClick={() => window.console.log(value)}
-            >
-              Ajouter l&#39;examen
-            </MDButton>
-          </MDBox>
-        </MDBox>
-      ) : null} */}
       <TaskAlert
         open={open}
         setOpen={setOpen}
