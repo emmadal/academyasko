@@ -1,6 +1,5 @@
-/* eslint-disable no-unsafe-optional-chaining */
 /* eslint-disable no-constant-condition */
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect } from "react";
 
 // Material Dashboard 2 React components
 import MDBox from "components/MDBox";
@@ -18,7 +17,7 @@ import TaskCard from "molecules/TaskCard";
 // Material Dashboard 2 React contexts
 import { useMaterialUIController } from "context";
 
-import { getExercicesByAuthor, getCookie } from "api";
+import { getExercicesByAuthor, getCookie, getMyTrainersList } from "api";
 
 function Tasks() {
   const [open, setOpen] = useState(false);
@@ -29,15 +28,18 @@ function Tasks() {
   const [err, setErr] = useState("");
   const [success, setSuccess] = useState("");
 
-  const getExercices = useCallback(async () => {
-    const res = await getExercicesByAuthor(userProfile?.id, token);
-    if (res?.success) {
-      setExercices([...res?.data]);
-    }
-  }, [userProfile?.id, token]);
-
   useEffect(() => {
-    getExercices();
+    (async () => {
+      const res = await getMyTrainersList(userProfile?.id, token);
+      if (res?.success) {
+        res.data.map(async (trainer) => {
+          const exo = await getExercicesByAuthor(trainer.id, token);
+          if (exo?.success) {
+            setExercices(exo.data);
+          }
+        });
+      }
+    })();
   }, []);
 
   if (userProfile?.user_type !== "teacher" && userProfile?.user_type !== "coach") {
