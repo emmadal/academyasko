@@ -28,8 +28,13 @@ function Tasks() {
   const [err, setErr] = useState("");
   const [success, setSuccess] = useState("");
 
-  useEffect(() => {
-    (async () => {
+  const getExercices = async () => {
+    if (userProfile?.user_type === "teacher" || userProfile?.user_type === "coach") {
+      const res = await getExercicesByAuthor(userProfile?.id, token);
+      if (res?.success) {
+        setExercices(res.data);
+      }
+    } else {
       const res = await getMyTrainersList(userProfile?.id, token);
       if (res?.success) {
         res.data.map(async (trainer) => {
@@ -39,7 +44,11 @@ function Tasks() {
           }
         });
       }
-    })();
+    }
+  };
+
+  useEffect(() => {
+    getExercices();
   }, []);
 
   if (userProfile?.user_type !== "teacher" && userProfile?.user_type !== "coach") {
